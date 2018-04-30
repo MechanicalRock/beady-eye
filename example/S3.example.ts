@@ -1,7 +1,7 @@
 import { S3,IAM } from '../src/index'
 
 let bucket = S3.bucket('myBucket')
-xdescribe(bucket.toString(), ()=> {
+describe(bucket.toString(), ()=> {
 
     
     let asDeveloperRole = IAM.role({roleName: 'DeveloperRole',

@@ -1,6 +1,6 @@
 
 import { Credentials, S3 as AwsS3 } from 'aws-sdk'
-import {IamRole } from './IAM'
+import { IamRole } from './IAM'
 import { expect } from 'chai'
 
 class S3Bucket {
@@ -17,10 +17,10 @@ class S3Bucket {
     }
 
     async s3Client() {
-        
-        if(this.lazyS3Client){
+
+        if (this.lazyS3Client) {
             return this.lazyS3Client
-        }else{
+        } else {
             let temporaryCreds = this.role ? await this.role.credentials() : undefined
             this.lazyS3Client = new AwsS3({ params: this.bucketParams, credentials: temporaryCreds })
             return this.lazyS3Client
@@ -32,30 +32,43 @@ class S3Bucket {
     }
 
     async shouldExist() {
-        let params = {}
         let s3 = (await this.s3Client())
         let response = await s3.headBucket(this.bucketParams).promise()
         expect(response).not.to.be.undefined
         return true
     }
-
+    
     async shouldBeReadable() {
-        return false
+        let s3 = (await this.s3Client())
+        let response = await s3.listObjects(this.bucketParams).promise()
+        expect(response).not.to.be.undefined
+        return true
+    }
+
+    async shouldNotBeReadable() {
+        // try {
+        //     let response = await promise()
+        //     fail(failureMessage)
+        //   } catch (e) {
+        //     expect(e.code).toEqual('AccessDenied')
+        //   }
     }
 
     async shouldBeEncrypted() {
         let s3 = (await this.s3Client())
         let response = await s3.getBucketEncryption(this.bucketParams).promise()
         expect(response).not.to.be.undefined
-        expect(response.ServerSideEncryptionConfiguration.Rules).to.deep.include( { ApplyServerSideEncryptionByDefault: {  SSEAlgorithm: 'AES256'} } )        
-        // expect(response.ServerSideEncryptionConfiguration.Rules).toContain( { ApplyServerSideEncryptionByDefault: {  SSEAlgorithm: 'AES256'} } )        
+
+        let rules = response.ServerSideEncryptionConfiguration &&
+            response.ServerSideEncryptionConfiguration.Rules ? response.ServerSideEncryptionConfiguration.Rules : []
+        expect(rules).to.deep.include({ ApplyServerSideEncryptionByDefault: { SSEAlgorithm: 'AES256' } })
         return true
     }
 
-    async shouldHaveAccessLoggingEnabled()  {
-    //   let response = await s3.getBucketLogging().promise().catch((err) => { console.log(err)})
-    //   expect(response).toBeDefined()
-    //   expect(response.LoggingEnabled).toBeDefined()            
+    async shouldHaveAccessLoggingEnabled() {
+        //   let response = await s3.getBucketLogging().promise().catch((err) => { console.log(err)})
+        //   expect(response).toBeDefined()
+        //   expect(response.LoggingEnabled).toBeDefined()            
     }
 
     async shouldHaveVersioningEnabled() {
@@ -64,10 +77,10 @@ class S3Bucket {
         // expect(response.Status).toEqual('Enabled')
     }
 
-    async shouldHaveLifecycleRule(lifeCycleRule){
+    async shouldHaveLifecycleRule(lifeCycleRule) {
         // let response = await s3.getBucketLifecycleConfiguration().promise()
         // expect(response.Rules).toBeDefined()
-        
+
         // let expectedRule = {
         //   ID: jasmine.any(String),
         //   Filter: jasmine.any(Object),
@@ -84,35 +97,35 @@ class S3Bucket {
         // expect(response.Rules).toContain(expectedRule)
 
     }
-    
-    async shouldNotBePubliclyAccessible () {
-    //   const allUsersURI = 'http://acs.amazonaws.com/groups/global/AllUsers'
-    //   const authenticatedUsersURI = 'http://acs.amazonaws.com/groups/global/AuthenticatedUsers'
-    //   const readAllUsers = { Grantee: { URI: allUsersURI,  Type : "Group"},Permission : jasmine.any(String)}
-    //   const readAuthUsers = { Grantee: { URI: authenticatedUsersURI, Type : "Group"}, Permission : jasmine.any(String) }
 
-    //   // interrogate the bucket ACLs
-    //   let aclResponse = await s3.getBucketAcl().promise()
-    //   expect(aclResponse.Grants).not.toContain(readAllUsers,"All users have access to this buckets")
-    //   expect(aclResponse.Grants).not.toContain(readAuthUsers,"AuthenticatedUsers have access to this bucket")
+    async shouldNotBePubliclyAccessible() {
+        //   const allUsersURI = 'http://acs.amazonaws.com/groups/global/AllUsers'
+        //   const authenticatedUsersURI = 'http://acs.amazonaws.com/groups/global/AuthenticatedUsers'
+        //   const readAllUsers = { Grantee: { URI: allUsersURI,  Type : "Group"},Permission : jasmine.any(String)}
+        //   const readAuthUsers = { Grantee: { URI: authenticatedUsersURI, Type : "Group"}, Permission : jasmine.any(String) }
 
-    //   // interrogate the bucket policy
-    //   try{
-    //     let policyResponse = await s3.getBucketPolicy().promise()
-    //     expect(policyResponse).toBeDefined()
-        
-    //     let anonymousAccessStatement = jasmine.objectContaining({
-    //       Effect: "Allow",
-    //       Principal: "*",
-    //     })
-        
-    //     var policy = JSON.parse(policyResponse.Policy)
-    //     expect(policy.Statement).not.toContain(anonymousAccessStatement)
-        
-    //   }catch(err) {
-    //     // No bucket policy means a private bucket
-    //     expect(err.toString()).toContain('NoSuchBucketPolicy')
-    //   }
+        //   // interrogate the bucket ACLs
+        //   let aclResponse = await s3.getBucketAcl().promise()
+        //   expect(aclResponse.Grants).not.toContain(readAllUsers,"All users have access to this buckets")
+        //   expect(aclResponse.Grants).not.toContain(readAuthUsers,"AuthenticatedUsers have access to this bucket")
+
+        //   // interrogate the bucket policy
+        //   try{
+        //     let policyResponse = await s3.getBucketPolicy().promise()
+        //     expect(policyResponse).toBeDefined()
+
+        //     let anonymousAccessStatement = jasmine.objectContaining({
+        //       Effect: "Allow",
+        //       Principal: "*",
+        //     })
+
+        //     var policy = JSON.parse(policyResponse.Policy)
+        //     expect(policy.Statement).not.toContain(anonymousAccessStatement)
+
+        //   }catch(err) {
+        //     // No bucket policy means a private bucket
+        //     expect(err.toString()).toContain('NoSuchBucketPolicy')
+        //   }
 
     }
 }

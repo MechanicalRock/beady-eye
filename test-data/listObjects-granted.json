@@ -1,0 +1,1 @@
+{"IsTruncated":false,"Marker":"","Contents":[{"Key":"sample.csv","LastModified":"2018-03-23T07:26:59.000Z","ETag":"\"4b9db7e24ffcf4d4eccd38185accdf37\"","Size":182,"StorageClass":"STANDARD","Owner":{"DisplayName":"sample","ID":"SAMPLE"}}],"Name":"s3001remediate","Prefix":"","MaxKeys":1000,"CommonPrefixes":[]}
