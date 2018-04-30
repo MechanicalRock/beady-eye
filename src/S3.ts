@@ -37,7 +37,7 @@ class S3Bucket {
         expect(response).not.to.be.undefined
         return true
     }
-    
+
     async shouldBeReadable() {
         let s3 = (await this.s3Client())
         let response = await s3.listObjects(this.bucketParams).promise()
@@ -54,15 +54,25 @@ class S3Bucket {
         //   }
     }
 
-    async shouldBeEncrypted() {
+    async isEncryptedByDefault() {
         let s3 = (await this.s3Client())
-        let response = await s3.getBucketEncryption(this.bucketParams).promise()
-        expect(response).not.to.be.undefined
+        try{
+            let response = await s3.getBucketEncryption(this.bucketParams).promise()
+            expect(response).not.to.be.undefined
+            return true
+        }catch(err){
+            expect(err.code).to.equal('ServerSideEncryptionConfigurationNotFoundError')
+            return false
+        }
 
-        let rules = response.ServerSideEncryptionConfiguration &&
-            response.ServerSideEncryptionConfiguration.Rules ? response.ServerSideEncryptionConfiguration.Rules : []
-        expect(rules).to.deep.include({ ApplyServerSideEncryptionByDefault: { SSEAlgorithm: 'AES256' } })
-        return true
+        // try {
+        //     let rules = response.ServerSideEncryptionConfiguration &&
+        //         response.ServerSideEncryptionConfiguration.Rules ? response.ServerSideEncryptionConfiguration.Rules : []
+        //     expect(rules).to.deep.include({ ApplyServerSideEncryptionByDefault: { SSEAlgorithm: 'AES256' } })
+        //     return true
+        // } catch (err) {
+        //     return false
+        // }
     }
 
     async shouldHaveAccessLoggingEnabled() {
