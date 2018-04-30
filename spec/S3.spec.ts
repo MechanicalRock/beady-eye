@@ -1,6 +1,20 @@
 import {S3} from "../src/S3"
 import AWSMock = require('aws-sdk-mock')
-import {S3service} from '../src/S3service'
+import fs = require('fs')
+
+let awsMockCallback = (filename) => {
+    let response = fs.readFileSync(filename)
+
+    return function(params,callback){
+        callback(null,response)
+    }
+}
+let awsMockFailureCallback = (filename) => {
+    let response = fs.readFileSync(filename)
+    return function(params,callback){
+        callback(response)
+    }
+}
 
 describe ("S3 module", () => {
 
@@ -18,13 +32,46 @@ describe ("S3 module", () => {
             expect(bucket.toString()).toEqual("S3 Bucket: myS3Bucket")
         })
 
-        it('should verify that a bucket exists when it does exist', () => {
-            AWSMock.mock('S3','headBucket','Not found')
-            //expect(bucket.shouldExist()).toBe(true)
-            AWSMock.restore('S3','headBucket')
-        })
+        describe('#shouldBeReadable', ()=> {
+            it('should be defined', ()=> {
+                expect(bucket.shouldBeReadable).toBeDefined()
+            })
 
-        it('should verify a bucket does not exist when it does not exist',() => {
+            describe('when the bucket exists', ()=> {
+
+                beforeEach(()=> {
+                    AWSMock.mock('S3', 'headBucket', awsMockCallback('test-data/headBucket-exists.json'));
+                })
+
+                afterEach(()=>{
+                    AWSMock.restore('S3');
+                })
+
+                it('should succeed when the bucket exists', async (done)=> {
+                    let response = await S3.bucket(bucketName).shouldExist()
+                    expect(response).toBe(true)
+                    done()
+                })
+            })
+            describe('when the bucket does not exist', ()=> {
+
+                beforeEach(()=> {
+                    AWSMock.mock('S3', 'headBucket', awsMockFailureCallback('test-data/headBucket-notExists.json'));
+                })
+
+                afterEach(()=>{
+                    AWSMock.restore('S3');
+                })
+
+                it('should throw an error', async (done)=> {
+                    try{
+                        await S3.bucket(bucketName).shouldExist()
+                        fail('exception not thrown')
+                    }catch(err){
+                        done()
+                    }
+                })
+            })
 
         })
     })

@@ -15,7 +15,39 @@ interface RoleParams {
     path?: string,
 }
 
-const role = (params: RoleParams):Promise<Credentials> => {
+export class IamRole {
+    params;
+
+    constructor(params: RoleParams){
+        this.params = params
+    }
+
+    toString() {
+        return this.params.roleName
+    }
+
+    async credentials(): Promise<Credentials> {
+        return sts.assumeRole({
+            RoleArn: roleArn(this.params),
+            RoleSessionName: 'BDIComplianceTest',        
+        }).promise().then(result => {
+            if(!result.Credentials){
+                throw new Error('No credentials provided')
+            }
+            return new Credentials({
+                accessKeyId: result.Credentials.AccessKeyId,
+                secretAccessKey: result.Credentials.SecretAccessKey,
+                sessionToken: result.Credentials.SessionToken,
+            })
+        });
+    }
+}
+
+const role = (params: RoleParams): IamRole => {
+    return new IamRole(params)
+}
+
+const roleOld = (params: RoleParams):Promise<Credentials> => {
     return sts.assumeRole({
         RoleArn: roleArn(params),
         RoleSessionName: 'BDIComplianceTest',        

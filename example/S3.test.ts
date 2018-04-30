@@ -1,15 +1,17 @@
 import { S3,IAM } from '../src/index'
 
 let bucket = S3.bucket('myBucket')
-describe(bucket.toString(), () => {
+describe(bucket.toString(), ()=> {
 
-    let asDeveloperRole = IAM.role('DeveloperRole')
+    
+    let asDeveloperRole = IAM.role({roleName: 'DeveloperRole',
+    accountId: '0123456789'})
     describe(`${asDeveloperRole} access`, () => {
-
+        
         let bucket = S3.bucket('myBucket', asDeveloperRole)
-        it("should be readable", () => {
-            bucket.shouldBeReadable()
-            // expect(bucket.toBeReadable()).toBeTrue()
+        it("should exist", async () => {
+            await bucket.shouldExist()
         })
     })
 })
+

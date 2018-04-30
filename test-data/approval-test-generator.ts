@@ -8,7 +8,7 @@ const approvalTest = async () => {
         var credentials = await IAM.role({
             roleName: 'AdminRole',
             accountId: accountId,
-        })
+        }).credentials()
 
         var s3 = new S3({ credentials: credentials })
 
@@ -16,6 +16,7 @@ const approvalTest = async () => {
         let nonExistingBucketName = 'thisBucketShouldNotExist'
 
         s3.headBucket({ Bucket: existingBucketName }).promise().then(writeTo('headBucket-exists.json'))
+        s3.headBucket({ Bucket: nonExistingBucketName }).promise().catch(writeTo('headBucket-notExists.json'))
     }
     catch (err) {
         console.log("Test data generation failed: " + err)
