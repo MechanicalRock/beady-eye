@@ -1,0 +1,50 @@
+{
+  "name": "beedy-eye",
+  "version": "0.0.1",
+  "description": "",
+  "main": "src/index.js",
+  "scripts": {
+    "lint": "eslint .",
+    "lint-fix": "eslint . --fix",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:it": "TMPDIR=/tmp jasmine --config=spec/support/jasmine.integration.json",
+    "test:wip": "TMPDIR=/tmp jasmine --config=spec/support/jasmine.wip.json",
+    "test:accept": "TMPDIR=/tmp cucumber-js spec",
+    "test:cover": "jasmine --coverage",
+    "package": "serverless package",
+    "deploy:dev": "serverless deploy --stage dev"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/MechanicalRock/beady-eye"
+  },
+  "author": "Tim Myerscough <tim.myerscough@mechanicalrock.io>",
+  "contributors": [],
+  "license": "MIT",
+  "homepage": "https://github.com/MechanicalRock/beady-eye",
+  "dependencies": {
+    "aws-sdk": "^2.94.0"
+  },
+  "devDependencies": {
+    "@types/jest": "^22.2.3",
+    "aws-sdk-mock": "^1.7.0",
+    "jest": "^22.4.3",
+    "ts-jest": "^22.4.4",
+    "typescript": "^2.8.3"
+  },
+  "jest": {
+    "transform": {
+      "^.+\\.tsx?$": "ts-jest"
+    },
+    "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?)$",
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js",
+      "jsx",
+      "json",
+      "node"
+    ]
+  }
+}
