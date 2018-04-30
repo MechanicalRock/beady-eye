@@ -17,6 +17,8 @@ const approvalTest = async () => {
 
         s3.headBucket({ Bucket: existingBucketName }).promise().then(writeTo('headBucket-exists.json'))
         s3.headBucket({ Bucket: nonExistingBucketName }).promise().catch(writeTo('headBucket-notExists.json'))
+        s3.getBucketEncryption({ Bucket: 's3-021-compliant' }).promise().then(writeTo('getBucketEncryption-encrypted.json'))
+        s3.getBucketEncryption({ Bucket: nonExistingBucketName }).promise().catch(writeTo('getBucketEncryption-notExist.json'))
     }
     catch (err) {
         console.log("Test data generation failed: " + err)

@@ -1,15 +1,18 @@
 
 import { Credentials, S3 as AwsS3 } from 'aws-sdk'
 import {IamRole } from './IAM'
+import { expect } from 'chai'
 
 class S3Bucket {
     name;
     role;
     lazyS3Client: AwsS3
+    bucketParams;
 
     constructor(name: string, role?: IamRole) {
         this.name = name
         this.role = role
+        this.bucketParams = { Bucket: this.name }
 
     }
 
@@ -19,7 +22,7 @@ class S3Bucket {
             return this.lazyS3Client
         }else{
             let temporaryCreds = this.role ? await this.role.credentials() : undefined
-            this.lazyS3Client = new AwsS3({ params: { Bucket: this.name }, credentials: temporaryCreds })
+            this.lazyS3Client = new AwsS3({ params: this.bucketParams, credentials: temporaryCreds })
             return this.lazyS3Client
         }
     }
@@ -31,8 +34,8 @@ class S3Bucket {
     async shouldExist() {
         let params = {}
         let s3 = (await this.s3Client())
-        let response = await s3.headBucket({ Bucket: this.name }).promise()
-        expect(response).toBeDefined()
+        let response = await s3.headBucket(this.bucketParams).promise()
+        expect(response).not.to.be.undefined
         return true
     }
 
@@ -41,10 +44,12 @@ class S3Bucket {
     }
 
     async shouldBeEncrypted() {
-        // let response = await s3.getBucketEncryption().promise()
-        // expect(response).toBeDefined()
-        // expect(response.ServerSideEncryptionConfiguration)
+        let s3 = (await this.s3Client())
+        let response = await s3.getBucketEncryption(this.bucketParams).promise()
+        expect(response).not.to.be.undefined
+        expect(response.ServerSideEncryptionConfiguration.Rules).to.deep.include( { ApplyServerSideEncryptionByDefault: {  SSEAlgorithm: 'AES256'} } )        
         // expect(response.ServerSideEncryptionConfiguration.Rules).toContain( { ApplyServerSideEncryptionByDefault: {  SSEAlgorithm: 'AES256'} } )        
+        return true
     }
 
     async shouldHaveAccessLoggingEnabled()  {
