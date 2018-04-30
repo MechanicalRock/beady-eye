@@ -38,11 +38,16 @@ class S3Bucket {
         return true
     }
 
-    async shouldBeReadable() {
+    async canListContents() {
         let s3 = (await this.s3Client())
-        let response = await s3.listObjects(this.bucketParams).promise()
-        expect(response).not.to.be.undefined
-        return true
+        try{
+            let response = await s3.listObjects(this.bucketParams).promise()
+            expect(response).not.to.be.undefined
+            return true
+        }catch(err){
+            expect(err.code).to.equal('AccessDenied')
+            return false
+        }
     }
 
     async shouldNotBeReadable() {
