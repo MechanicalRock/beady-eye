@@ -14,3 +14,14 @@ yarn link
 cd /path/to/my/project
 yarn link beady-eye
 ```
+
+## Generating test data
+Set the details of the account you wish to switch to for test data generation
+```
+export AWS_PROFILE='my_profile'
+export AWS_ACCOUNT_ID='123456
+```
+
+```
+yarn run test:approval
+```

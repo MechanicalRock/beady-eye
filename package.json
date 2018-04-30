@@ -4,9 +4,11 @@
   "description": "",
   "main": "src/index.js",
   "scripts": {
+    "build": "tsc",
     "lint": "eslint .",
     "lint-fix": "eslint . --fix",
     "test": "jest",
+    "test:approval": "yarn build && node .build/test-data/approval-test-generator.js",
     "test:watch": "jest --watch",
     "test:it": "TMPDIR=/tmp jasmine --config=spec/support/jasmine.integration.json",
     "test:wip": "TMPDIR=/tmp jasmine --config=spec/support/jasmine.wip.json",
@@ -24,6 +26,7 @@
   "license": "MIT",
   "homepage": "https://github.com/MechanicalRock/beady-eye",
   "dependencies": {
+    "@types/node": "^10.0.0",
     "aws-sdk": "^2.94.0"
   },
   "devDependencies": {
