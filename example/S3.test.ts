@@ -1,7 +1,7 @@
 import { S3,IAM } from '../src/index'
 
 let bucket = S3.bucket('myBucket')
-describe(bucket.toString()){
+describe(bucket.toString(), () => {
 
     let asDeveloperRole = IAM.role('DeveloperRole')
     describe(`${asDeveloperRole} access`, () => {
@@ -12,5 +12,4 @@ describe(bucket.toString()){
             // expect(bucket.toBeReadable()).toBeTrue()
         })
     })
-}
-
+})
