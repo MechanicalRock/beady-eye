@@ -31,9 +31,16 @@ const approvalTest = async () => {
         s3.getBucketLogging({ Bucket: nonExistingBucketName }).promise().catch(writeTo('getBucketLogging-notExist.json'))
         
         
+        // uncomment desired version (manual setup required)
         // s3.getBucketVersioning({ Bucket: existingBucketName }).promise().then(writeTo('getBucketVersioning-enabled.json'))
         // s3.getBucketVersioning({ Bucket: existingBucketName }).promise().then(writeTo('getBucketVersioning-disabled.json'))
         s3.getBucketVersioning({ Bucket: nonExistingBucketName }).promise().catch(writeTo('getBucketVersioning-notExist.json'))
+        
+        
+        // uncomment desired version (manual setup required)
+        // s3.getBucketAcl({ Bucket: existingBucketName }).promise().catch(writeTo('getBucketAcl-publicRead.json'))
+        // s3.getBucketAcl({ Bucket: existingBucketName }).promise().catch(writeTo('getBucketAcl-publicRead.json'))
+        s3.getBucketAcl({ Bucket: nonExistingBucketName }).promise().catch(writeTo('getBucketAcl-notExist.json'))
     }
     catch (err) {
         console.log("Test data generation failed: " + err)

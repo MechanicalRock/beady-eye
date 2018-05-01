@@ -25,3 +25,10 @@ export AWS_ACCOUNT_ID='123456
 ```
 yarn run test:approval
 ```
+
+# Releasing
+```
+yarn run release
+git push
+git push --tags
+```

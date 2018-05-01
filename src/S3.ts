@@ -80,8 +80,9 @@ class S3Bucket {
         return response.Status == 'Enabled'
     }
 
-    async shouldHaveLifecycleRule(lifeCycleRule) {
-        // let response = await s3.getBucketLifecycleConfiguration().promise()
+    async hasLifecycleRule(lifeCycleRule) {
+        let s3 = (await this.s3Client())
+        let response = await s3.getBucketLifecycleConfiguration(this.bucketParams).promise()
         // expect(response.Rules).toBeDefined()
 
         // let expectedRule = {
@@ -101,7 +102,7 @@ class S3Bucket {
 
     }
 
-    async shouldNotBePubliclyAccessible() {
+    async isPubliclyAccessible() {
         //   const allUsersURI = 'http://acs.amazonaws.com/groups/global/AllUsers'
         //   const authenticatedUsersURI = 'http://acs.amazonaws.com/groups/global/AuthenticatedUsers'
         //   const readAllUsers = { Grantee: { URI: allUsersURI,  Type : "Group"},Permission : jasmine.any(String)}
