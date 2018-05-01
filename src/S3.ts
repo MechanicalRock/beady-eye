@@ -2,6 +2,7 @@
 import { Credentials, S3 as AwsS3 } from 'aws-sdk'
 import { IamRole } from './IAM'
 import { expect } from 'chai'
+import { isMatch } from 'lodash'
 
 class S3Bucket {
     name;
@@ -40,11 +41,11 @@ class S3Bucket {
 
     async canListContents() {
         let s3 = (await this.s3Client())
-        try{
+        try {
             let response = await s3.listObjects(this.bucketParams).promise()
             expect(response).not.to.be.undefined
             return true
-        }catch(err){
+        } catch (err) {
             expect(err.code).to.equal('AccessDenied')
             return false
         }
@@ -52,11 +53,11 @@ class S3Bucket {
 
     async hasEncryptionByDefault() {
         let s3 = (await this.s3Client())
-        try{
+        try {
             let response = await s3.getBucketEncryption(this.bucketParams).promise()
             expect(response).not.to.be.undefined
             return true
-        }catch(err){
+        } catch (err) {
             expect(err.code).to.equal('ServerSideEncryptionConfigurationNotFoundError')
             return false
         }
@@ -66,13 +67,13 @@ class S3Bucket {
         let s3 = (await this.s3Client())
         let response = await s3.getBucketLogging(this.bucketParams).promise()
         expect(response).not.to.be.undefined
-        if (response.LoggingEnabled){
+        if (response.LoggingEnabled) {
             return true
-        }else {
+        } else {
             return false
         }
     }
-    
+
     async hasVersioningEnabled() {
         let s3 = (await this.s3Client())
         let response = await s3.getBucketVersioning(this.bucketParams).promise()
@@ -83,6 +84,7 @@ class S3Bucket {
     async hasLifecycleRule(lifeCycleRule) {
         let s3 = (await this.s3Client())
         let response = await s3.getBucketLifecycleConfiguration(this.bucketParams).promise()
+
         // expect(response.Rules).toBeDefined()
 
         // let expectedRule = {
@@ -103,34 +105,59 @@ class S3Bucket {
     }
 
     async isPubliclyAccessible() {
-        //   const allUsersURI = 'http://acs.amazonaws.com/groups/global/AllUsers'
-        //   const authenticatedUsersURI = 'http://acs.amazonaws.com/groups/global/AuthenticatedUsers'
+        const allUsersURI = 'http://acs.amazonaws.com/groups/global/AllUsers'
+        const authenticatedUsersURI = 'http://acs.amazonaws.com/groups/global/AuthenticatedUsers'
         //   const readAllUsers = { Grantee: { URI: allUsersURI,  Type : "Group"},Permission : jasmine.any(String)}
         //   const readAuthUsers = { Grantee: { URI: authenticatedUsersURI, Type : "Group"}, Permission : jasmine.any(String) }
+        const readAllUsers = { Grantee: { URI: allUsersURI, Type: "Group" } }
+        const readAuthUsers = { Grantee: { URI: authenticatedUsersURI, Type: "Group" } }
 
-        //   // interrogate the bucket ACLs
-        //   let aclResponse = await s3.getBucketAcl().promise()
-        //   expect(aclResponse.Grants).not.toContain(readAllUsers,"All users have access to this buckets")
-        //   expect(aclResponse.Grants).not.toContain(readAuthUsers,"AuthenticatedUsers have access to this bucket")
+        // interrogate the bucket ACLs
+        let s3 = (await this.s3Client())
+        let aclResponse = await s3.getBucketAcl(this.bucketParams).promise()
 
-        //   // interrogate the bucket policy
-        //   try{
-        //     let policyResponse = await s3.getBucketPolicy().promise()
-        //     expect(policyResponse).toBeDefined()
+        let containsGrant = (toMatch) => {
+            return aclResponse.Grants && aclResponse.Grants.find(grant => isMatch(grant, toMatch)) != undefined
+        }
 
-        //     let anonymousAccessStatement = jasmine.objectContaining({
-        //       Effect: "Allow",
-        //       Principal: "*",
-        //     })
+        if (containsGrant(readAllUsers) || containsGrant(readAuthUsers)) {
+            return true
+        }
 
-        //     var policy = JSON.parse(policyResponse.Policy)
-        //     expect(policy.Statement).not.toContain(anonymousAccessStatement)
 
-        //   }catch(err) {
-        //     // No bucket policy means a private bucket
-        //     expect(err.toString()).toContain('NoSuchBucketPolicy')
-        //   }
+        // interrogate the bucket policy
+        try {
+            let policyResponse = await s3.getBucketPolicy(this.bucketParams).promise()
+            expect(policyResponse).not.to.be.undefined
 
+            let anonymousAccessStatement = {
+                Effect: "Allow",
+                Principal: "*",
+            }
+
+
+            if (policyResponse.Policy) {
+                var policy = JSON.parse(policyResponse.Policy)
+                let containsStatement = (toMatch) => {
+                    return policy.Statement && policy.Statement.find(statement => isMatch(statement, toMatch)) != undefined
+                }
+
+                if (containsStatement(anonymousAccessStatement)) {
+                    return true
+                }
+
+
+
+                // expect(policy.Statement).not.toContain(anonymousAccessStatement)
+
+            }
+
+        } catch (err) {
+            // No bucket policy means a private bucket
+            expect(err.code).to.equal('NoSuchBucketPolicy')
+        }
+
+        return false
     }
 }
 

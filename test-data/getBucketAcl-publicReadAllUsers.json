@@ -1,0 +1,1 @@
+{"Owner":{"DisplayName":"owner","ID":"SAMPLE"},"Grants":[{"Grantee":{"DisplayName":"owner","ID":"SAMPLE","Type":"CanonicalUser"},"Permission":"FULL_CONTROL"},{"Grantee":{"Type":"Group","URI":"http://acs.amazonaws.com/groups/global/AllUsers"},"Permission":"READ"}]}

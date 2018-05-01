@@ -1,0 +1,1 @@
+{"message":"The bucket policy does not exist","code":"NoSuchBucketPolicy","region":null,"time":"2018-05-01T05:18:48.571Z","requestId":"222C434E4A7D7B1D","extendedRequestId":"d6Inx8//tRcrzPoze8aSjLMg9tmupWGnUwWwrpin1gh54cYmzOLNSxGLx6lXb/8nXEwd7ajbpqI=","statusCode":404,"retryable":false,"retryDelay":102.77172713830826}

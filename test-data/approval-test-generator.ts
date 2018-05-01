@@ -38,9 +38,15 @@ const approvalTest = async () => {
         
         
         // uncomment desired version (manual setup required)
-        // s3.getBucketAcl({ Bucket: existingBucketName }).promise().catch(writeTo('getBucketAcl-publicRead.json'))
-        // s3.getBucketAcl({ Bucket: existingBucketName }).promise().catch(writeTo('getBucketAcl-publicRead.json'))
+        // s3.getBucketAcl({ Bucket: existingBucketName }).promise().then(writeTo('getBucketAcl-publicReadAllUsers.json'))
+        // s3.getBucketAcl({ Bucket: existingBucketName }).promise().then(writeTo('getBucketAcl-private.json'))
         s3.getBucketAcl({ Bucket: nonExistingBucketName }).promise().catch(writeTo('getBucketAcl-notExist.json'))
+        
+        // uncomment desired version (manual setup required)
+        // s3.getBucketPolicy({ Bucket: existingBucketName }).promise().then(writeTo('getBucketPolicy-denyAnonymous.json'))
+        // s3.getBucketPolicy({ Bucket: existingBucketName }).promise().then(writeTo('getBucketPolicy-public.json'))
+        s3.getBucketPolicy({ Bucket: existingBucketName }).promise().catch(writeTo('getBucketPolicy-none.json'))
+        s3.getBucketPolicy({ Bucket: nonExistingBucketName }).promise().catch(writeTo('getBucketPolicy-notExist.json'))
     }
     catch (err) {
         console.log("Test data generation failed: " + err)
