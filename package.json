@@ -1,6 +1,6 @@
 {
   "name": "beady-eye",
-  "version": "0.0.2",
+  "version": "0.2.0",
   "description": "",
   "main": ".build/src/index.js",
   "scripts": {
@@ -19,7 +19,9 @@
     "test:cover": "jasmine --coverage",
     "package": "serverless package",
     "deploy:dev": "serverless deploy --stage dev",
-    "release": "yarn run clean && yarn version && yarn run build && yarn run test && npm login && npm publish && yarn run test:security-monitor"
+    "preversion": "yarn run build",
+    "prepublish": "yarn run build",
+    "release": "yarn run clean && yarn version && yarn run test && npm login && npm publish && yarn run test:security-monitor"
   },
   "repository": {
     "type": "git",
