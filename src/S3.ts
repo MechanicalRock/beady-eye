@@ -50,7 +50,7 @@ class S3Bucket {
         }
     }
 
-    async isEncryptedByDefault() {
+    async hasEncryptionByDefault() {
         let s3 = (await this.s3Client())
         try{
             let response = await s3.getBucketEncryption(this.bucketParams).promise()
@@ -73,7 +73,7 @@ class S3Bucket {
         }
     }
 
-    async shouldHaveVersioningEnabled() {
+    async hasVersioningEnabled() {
         // let response = await s3.getBucketVersioning().promise()
         // expect(response).toBeDefined()
         // expect(response.Status).toEqual('Enabled')
