@@ -72,11 +72,12 @@ class S3Bucket {
             return false
         }
     }
-
+    
     async hasVersioningEnabled() {
-        // let response = await s3.getBucketVersioning().promise()
-        // expect(response).toBeDefined()
-        // expect(response.Status).toEqual('Enabled')
+        let s3 = (await this.s3Client())
+        let response = await s3.getBucketVersioning(this.bucketParams).promise()
+        expect(response).not.to.be.undefined
+        return response.Status == 'Enabled'
     }
 
     async shouldHaveLifecycleRule(lifeCycleRule) {
