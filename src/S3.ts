@@ -159,6 +159,40 @@ class S3Bucket {
 
         return false
     }
+
+    async canGetObject(key: string) {
+        let s3 = (await this.s3Client())
+        try {
+            let response = await s3.getObject({ Bucket: this.name, Key: key }).promise()
+            return true
+        } catch (e) {
+            expect(e.code).to.equal('AccessDenied')
+            return false
+        }
+    }
+
+    async canPutObject(key: string) {
+
+        let s3 = (await this.s3Client())
+        try {
+            let response = await s3.putObject({ Bucket: this.name, Key: key, Body: 'sample data' }).promise()
+            return true
+        } catch (e) {
+            expect(e.code).to.equal('AccessDenied')
+            return false
+        }
+    }
+
+    async canDeleteObject(key:string) {
+        let s3 = (await this.s3Client())
+        try {
+            let response = await s3.deleteObject({ Bucket: this.name, Key: key}).promise()
+            return true
+        } catch (e) {
+            expect(e.code).to.equal('AccessDenied')
+            return false
+        }
+    }
 }
 
 const s3Bucket = (name: string, role?: IamRole) => {

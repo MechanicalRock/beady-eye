@@ -47,6 +47,20 @@ const approvalTest = async () => {
         // s3.getBucketPolicy({ Bucket: existingBucketName }).promise().then(writeTo('getBucketPolicy-public.json'))
         s3.getBucketPolicy({ Bucket: existingBucketName }).promise().catch(writeTo('getBucketPolicy-none.json'))
         s3.getBucketPolicy({ Bucket: nonExistingBucketName }).promise().catch(writeTo('getBucketPolicy-notExist.json'))
+
+        let existingFile = 'test/existingFile'
+        let nonExistingFile = 'test/nonExistingFile'
+
+        s3.putObject({Bucket: existingBucketName, Body : 'sample',Key : existingFile}).promise().then(writeTo('putObject-granted.json')).catch(writeTo('putObject-denied.json'))
+        s3.putObject({Bucket: nonExistingBucketName, Body : 'sample',Key : existingFile}).promise().catch(writeTo('putObject-notExist.json'))
+        
+        s3.getObject({Bucket: existingBucketName, Key : existingFile}).promise().then(writeTo('getObject-granted.json')).catch(writeTo('getObject-denied.json'))
+        s3.getObject({Bucket: existingBucketName, Key : nonExistingFile}).promise().then(writeTo('getObject-noSuchKey.json')).catch(writeTo('getObject-errorNoSuchKey.json'))
+        s3.getObject({Bucket: nonExistingBucketName, Key : existingFile}).promise().catch(writeTo('getObject-notExist.json'))
+        
+        s3.deleteObject({Bucket: existingBucketName, Key : existingFile}).promise().then(writeTo('deleteObject-granted.json')).catch(writeTo('deleteObject-denied.json'))
+        s3.deleteObject({Bucket: existingBucketName, Key : nonExistingFile}).promise().then(writeTo('deleteObject-noSuchKey.json')).catch(writeTo('deleteObject-errorNoSuchKey.json'))
+        s3.deleteObject({Bucket: nonExistingBucketName, Key : existingFile}).promise().catch(writeTo('deleteObject-notExist.json'))
     }
     catch (err) {
         console.log("Test data generation failed: " + err)
