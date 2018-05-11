@@ -111,9 +111,9 @@ export class VPC {
       const client = await this.vpcClient();
       const result = await client.describeInstances(params).promise();
       if (result === undefined) return false;
+      if (result.Reservations.length == 0) return false;
 
       // Check instance and status
-      //console.log(result.Reservations[0].Instances);
       let queryResult = true;
       queryResult = queryResult || (result.Reservations[0].Instances.length == 1);
 

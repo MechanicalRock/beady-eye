@@ -34,4 +34,6 @@ export const testVpc  = {
     validVpcResult: { Vpcs: [ { VpcId: "12345"} ] };
     emptyVpcEndpointResult: { VpcEndpoints: [] };
     validVpcEndpointResult: { VpcEndpoints: [ { Value: "Fake"} ] };
+    emptyEC2EndpointResult: { Reservations: [] };
+    validEC2EndpointResult: { Reservations: [ { Instances: [ { Value: "Fake"} ] } ] };
 }
