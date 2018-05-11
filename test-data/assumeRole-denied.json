@@ -1,1 +1,0 @@
-{"message":"Not authorized to perform sts:AssumeRole","code":"AccessDenied","time":"2018-05-08T06:14:20.453Z","requestId":"0b877790-5287-11e8-acf5-83ef774460f8","statusCode":403,"retryable":false,"retryDelay":96.23248524043737}
