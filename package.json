@@ -21,7 +21,7 @@
     "deploy:dev": "serverless deploy --stage dev",
     "preversion": "yarn run build",
     "prepublish": "yarn run build",
-    "release": "yarn run clean && yarn version && yarn run test && npm login && npm publish && yarn run test:security-monitor"
+    "release": "yarn run clean && yarn version && yarn run test && npm login && npm publish && yarn run test:security-monitor && git push && git push --tags"
   },
   "repository": {
     "type": "git",
