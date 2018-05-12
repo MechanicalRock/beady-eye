@@ -4,10 +4,17 @@
   "description": "",
   "main": ".build/src/index.js",
   "scripts": {
-    "clean": "rm -rf .build",
     "build": "tsc",
+    "clean": "rm -rf .build",
+    "ci:upgrade-dependencies": "./upgrade-dependencies.sh",
+    "dependency:upgrade": "yarn upgrade --latest",
+    "deploy:dev": "serverless deploy --stage dev",
     "lint": "eslint .",
     "lint-fix": "eslint . --fix",
+    "package": "serverless package",
+    "preversion": "yarn run build",
+    "prepublish": "yarn run build",
+    "release": "yarn run clean && yarn version && yarn run test && npm login && npm publish && yarn run test:security-monitor && git push && git push --tags",
     "test": "jest",
     "test:approval": "yarn build && node .build/test-data/approval-test-generator.js",
     "test:watch": "jest --watch",
@@ -16,12 +23,7 @@
     "test:accept": "TMPDIR=/tmp cucumber-js spec",
     "test:security": "snyk test",
     "test:security-monitor": "snyk monitor",
-    "test:cover": "jasmine --coverage",
-    "package": "serverless package",
-    "deploy:dev": "serverless deploy --stage dev",
-    "preversion": "yarn run build",
-    "prepublish": "yarn run build",
-    "release": "yarn run clean && yarn version && yarn run test && npm login && npm publish && yarn run test:security-monitor && git push && git push --tags"
+    "test:cover": "jasmine --coverage"
   },
   "repository": {
     "type": "git",
