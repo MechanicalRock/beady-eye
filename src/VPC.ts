@@ -1,14 +1,19 @@
 import { Credentials, EC2 as AwsEC2 } from 'aws-sdk'
+import { IamRole } from './IAM'
 import { expect } from 'chai'
 
 export class VPC {
+
+    name: string
+    role: IamRole 
+    region: string
+    lazyEc2Client?: AwsEC2
+    matchingVpcId?: string
 
     constructor(name, role, region) {
         this.name = name;
         this.role = role;
         this.region = region
-        this.lazyEc2Client = undefined;
-        this.matchingVpcId = undefined;
     }
 
     async makeEc2Client() {
@@ -45,6 +50,7 @@ export class VPC {
       const client = await this.vpcClient();
       const result = await client.describeVpcs(params).promise();
       //console.log(result);
+
       if (result === undefined) return false;
       if (result.Vpcs.length == 0) return false;
 
@@ -127,12 +133,6 @@ export class VPC {
         return `VPC: ${this.name}`;
     }
 
-    // async shouldExist() {
-    //     let vpc = (await this.vpcClient())
-    //     let response = await vpc.exists().promise()
-    //     expect(response).not.to.be.undefined
-    //     return true
-    // }
 }
 
 

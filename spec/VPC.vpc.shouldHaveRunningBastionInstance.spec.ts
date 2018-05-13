@@ -1,12 +1,13 @@
 import { VPC } from '../src/VPC'
-import { callbackSuccessReturning, nvp, testVpc } from './support'
+import { callbackSuccessReturning, nvp } from './support'
+import { testVpc } from './VPC.stub'
 var AWSMock = require('aws-sdk-mock')
 var sinon = require('sinon')
 
 describe("VPCObject#shouldHaveRunningBastionInstance function", () =>{
 
-    let vpc: VPC = undefined;
-    let testMethod = undefined;
+    let vpc: VPC;
+    let testMethod;
 
     let withMockedDescribeEndpointResult = (result) => {
         AWSMock.mock('EC2', 'describeVpcs', callbackSuccessReturning(testVpc.validVpcResult));
