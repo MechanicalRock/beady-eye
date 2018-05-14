@@ -13,7 +13,7 @@ describe("VPCObject#shouldHaveRunningBastionInstance function", () =>{
         AWSMock.mock('EC2', 'describeInstances', callbackSuccessReturning(result));
     }
 
-    beforeEach(() => { vpc = new VPC(testVpc.name, undefined, testVpc.region); } )
+    beforeEach(() => { vpc = new VPC(testVpc.name, testVpc.region); })
 
     afterEach(() => AWSMock.restore('EC2') )
 

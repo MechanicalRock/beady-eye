@@ -3,19 +3,19 @@ import { expect } from 'chai'
 
 export class VPC {
 
-    constructor(name, role, region) {
+    name: string
+    region: string | undefined
+    lazyEc2Client?: AwsEC2
+    matchingVpcId?: string
+
+    constructor(name: string, region?: string) {
         this.name = name;
-        this.role = role;
-        this.region = region
-        this.lazyEc2Client = undefined;
-        this.matchingVpcId = undefined;
+        this.region = region;
     }
 
     async makeEc2Client() {
-      const tempCreds = this.role ? await this.role.credentials() : undefined;
-
-      // Make EC2 client from the credentials
-      this.lazyEc2Client = new AwsEC2({ credentials: tempCreds, region: this.region });
+      // Make EC2 client
+      this.lazyEc2Client = new AwsEC2({ region: this.region });
       return this.lazyEc2Client;
     }
 
@@ -127,12 +127,6 @@ export class VPC {
         return `VPC: ${this.name}`;
     }
 
-    // async shouldExist() {
-    //     let vpc = (await this.vpcClient())
-    //     let response = await vpc.exists().promise()
-    //     expect(response).not.to.be.undefined
-    //     return true
-    // }
 }
 
 
