@@ -14,8 +14,6 @@ describe("VPCObject#shouldExist function", () =>{
 
     afterEach(() => AWSMock.restore('EC2') )
 
-    it("exists on the object", () => expect(vpc.shouldExist).toBeDefined() )
-
     it("passes the vpc name to the AWS SDK", async () => {
         const mock = sinon.spy(callbackSuccessReturning(testVpc.validVpcResult));
         AWSMock.mock('EC2', 'describeVpcs', mock);

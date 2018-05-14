@@ -10,10 +10,14 @@ export class VPC {
     lazyEc2Client?: AwsEC2
     matchingVpcId?: string
 
-    constructor(name, role, region) {
+    constructor(name: string, role?: IamRole, region?: string) {
         this.name = name;
-        this.role = role;
-        this.region = region
+        if (role) {
+          this.role = role;
+        }
+        if (region) {
+          this.region = region
+        }
     }
 
     async makeEc2Client() {
@@ -49,16 +53,15 @@ export class VPC {
 
       const client = await this.vpcClient();
       const result = await client.describeVpcs(params).promise();
-      //console.log(result);
 
-      if (result === undefined) return false;
-      if (result.Vpcs.length == 0) return false;
-
-      // Store matching VPC data
-      this.matchingVpcId = result.Vpcs[0].VpcId
-
-      return result.Vpcs.length == 1;
-
+      if (result && result.Vpcs && result.Vpcs[0]) {
+        // Store matching VPC data
+        this.matchingVpcId = result.Vpcs[0].VpcId
+  
+        return result.Vpcs.length == 1;
+      } else {
+        return false
+      }
     }
 
     async shouldHaveS3Endpoint() {
@@ -69,24 +72,28 @@ export class VPC {
         if (vpcExists == false) return false;
       }
 
-      const params = {
-                        Filters: [
-                          {
-                            'Name': 'vpc-id',
-                            'Values': [this.matchingVpcId]
-                          },
-                          {
-                            'Name': 'service-name',
-                            'Values': [`com.amazonaws.${this.region}.s3`]
-                          }]
-                    };
+      if(this.matchingVpcId){
 
-      const client = await this.vpcClient();
-      const result = await client.describeVpcEndpoints(params).promise();
-      //console.log(result);
-      if (result === undefined) return false;
+        const params = {
+                          Filters: [
+                            {
+                              'Name': 'vpc-id',
+                              'Values': [this.matchingVpcId]
+                            },
+                            {
+                              'Name': 'service-name',
+                              'Values': [`com.amazonaws.${this.region}.s3`]
+                            }]
+                      };
+  
+        const client = await this.vpcClient();
+        const result = await client.describeVpcEndpoints(params).promise();
+  
+        return result !== undefined && result.VpcEndpoints && result.VpcEndpoints.length == 1;
+      }else{
+        return false
+      }
 
-      return result.VpcEndpoints.length == 1;
     }
 
     async shouldHaveRunningBastionInstance() {
@@ -97,36 +104,53 @@ export class VPC {
         if (vpcExists == false) return false;
       }
 
-      const params = {
-                        Filters: [
-                          {
-                            'Name': 'vpc-id',
-                            'Values': [this.matchingVpcId]
-                          },
-                          {
-                            'Name': 'tag:Name',
-                            'Values': ['*bastion*']
-                          } ]
-                    };
+      if(this.matchingVpcId){
+        const params = {
+                          Filters: [
+                            {
+                              'Name': 'vpc-id',
+                              'Values': [this.matchingVpcId]
+                            },
+                            {
+                              'Name': 'tag:Name',
+                              'Values': ['*bastion*']
+                            } ]
+                      };
+  
+        if (this.matchingVpcId === undefined) {
+          const vpcExists = await this.shouldExist();
+          if (vpcExists == false) return false;
+        }
+  
+        const client = await this.vpcClient();
+        const result = await client.describeInstances(params).promise();
 
-      if (this.matchingVpcId === undefined) {
-        const vpcExists = await this.shouldExist();
-        if (vpcExists == false) return false;
+        if( result && result.Reservations ){
+          if (result.Reservations.length == 0) return false;
+
+          let reservation = result.Reservations[0]
+
+          let instances = result.Reservations[0].Instances
+          if(instances){
+            // Check instance and status
+            let queryResult = true;
+            queryResult = queryResult || (instances.length == 1);
+      
+            const instance = instances[0];
+            queryResult = queryResult || (instance.State && instance.State.Name == "running");
+      
+            return queryResult;
+          }else{
+            return false
+          }
+        }else{
+          return false
+        }
+  
+      }else{
+        return false
       }
 
-      const client = await this.vpcClient();
-      const result = await client.describeInstances(params).promise();
-      if (result === undefined) return false;
-      if (result.Reservations.length == 0) return false;
-
-      // Check instance and status
-      let queryResult = true;
-      queryResult = queryResult || (result.Reservations[0].Instances.length == 1);
-
-      const instance = result.Reservations[0].Instances[0];
-      queryResult = queryResult || (instance.State.Name == "running");
-
-      return queryResult;
     }
 
     toString() {

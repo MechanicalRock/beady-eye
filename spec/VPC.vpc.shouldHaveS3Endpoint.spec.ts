@@ -5,7 +5,7 @@ import { testVpc } from './VPC.stub'
 var AWSMock = require('aws-sdk-mock')
 var sinon = require('sinon')
 
-describe("VPCObject#shouldHaveS3Endpoint function", () =>{
+describe("VPCObject#shouldHaveS3Endpoint function", () => {
 
     let vpc: VPC;
 
@@ -17,8 +17,6 @@ describe("VPCObject#shouldHaveS3Endpoint function", () =>{
     beforeEach(() => { vpc = new VPC(testVpc.name, undefined, testVpc.region);} )
 
     afterEach(() => AWSMock.restore('EC2') )
-
-    it("exists on the object", () => expect(vpc.shouldHaveS3Endpoint).toBeDefined() )
 
     it("passes the vpc name to the AWS SDK", async () => {
         const mock = sinon.spy(callbackSuccessReturning(testVpc.validVpcEndpointResult));
@@ -49,4 +47,4 @@ describe("VPCObject#shouldHaveS3Endpoint function", () =>{
         expect(await vpc.shouldHaveS3Endpoint()).toEqual(false);
     })
 
-}
+})

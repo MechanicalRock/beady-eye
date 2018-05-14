@@ -4,7 +4,12 @@ describe ("VPC Module", () => {
 
     describe ("#VPCObject", () => {
         const testVPCName = "testVPC";
-        const vpc = new VPC(testVPCName);
+        let vpc
+        
+        beforeEach(()=> {
+            vpc = new VPC(testVPCName);
+
+        })
 
         it("exists", () => expect(vpc).toBeDefined() )
 
