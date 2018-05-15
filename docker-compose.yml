@@ -8,12 +8,14 @@ services:
       - .:/app:delegated
       - ~/.aws/:/root/.aws
       - ~/.gitconfig:/root/.gitconfig
+      - ~/.ssh:/root/.ssh
     environment:
       - AWS_ACCESS_KEY_ID
       - AWS_SECRET_ACCESS_KEY
       - AWS_PROFILE
       - AWS_SESSION_TOKEN
       - AWS_SECURITY_TOKEN
+      - SNYK_TOKEN
     entrypoint:
       - /bin/bash
       # - aws

@@ -44,15 +44,15 @@ export class VPC {
 
       const client = await this.vpcClient();
       const result = await client.describeVpcs(params).promise();
-      //console.log(result);
-      if (result === undefined) return false;
-      if (result.Vpcs.length == 0) return false;
 
-      // Store matching VPC data
-      this.matchingVpcId = result.Vpcs[0].VpcId
+      if (result && result.Vpcs && result.Vpcs.length) {
+        // Store matching VPC data
+        this.matchingVpcId = result.Vpcs[0].VpcId;
+  
+        return result.Vpcs.length == 1;
+      }
 
-      return result.Vpcs.length == 1;
-
+      return false;
     }
 
     async shouldHaveS3Endpoint() {
@@ -62,6 +62,8 @@ export class VPC {
         const vpcExists = await this.shouldExist();
         if (vpcExists == false) return false;
       }
+
+      if (this.matchingVpcId === undefined) return false;
 
       const params = {
                         Filters: [
@@ -77,11 +79,12 @@ export class VPC {
 
       const client = await this.vpcClient();
       const result = await client.describeVpcEndpoints(params).promise();
-      //console.log(result);
-      if (result === undefined) return false;
 
-      return result.VpcEndpoints.length == 1;
+      // Ensure result is a boolean, as async functions return a promise
+      let queryResult: boolean = !!result && !!result.VpcEndpoints && result.VpcEndpoints.length == 1;
+      return queryResult;
     }
+
 
     async shouldHaveRunningBastionInstance() {
       // Query that the VPC has a running Bastion EC2 instance
@@ -90,6 +93,9 @@ export class VPC {
         const vpcExists = await this.shouldExist();
         if (vpcExists == false) return false;
       }
+
+      // Need an extra check here otherwise TypeScript throws a compile error
+      if (this.matchingVpcId === undefined) return false;
 
       const params = {
                         Filters: [
@@ -100,28 +106,31 @@ export class VPC {
                           {
                             'Name': 'tag:Name',
                             'Values': ['*bastion*']
-                          } ]
+                          }]
                     };
-
-      if (this.matchingVpcId === undefined) {
-        const vpcExists = await this.shouldExist();
-        if (vpcExists == false) return false;
-      }
 
       const client = await this.vpcClient();
       const result = await client.describeInstances(params).promise();
-      if (result === undefined) return false;
-      if (result.Reservations.length == 0) return false;
 
-      // Check instance and status
-      let queryResult = true;
-      queryResult = queryResult || (result.Reservations[0].Instances.length == 1);
+      let queryResult: boolean = !!result && !!result.Reservations && result.Reservations.length == 1;
+      if ( queryResult ) {
+        const res = result.Reservations![0];
+        if (res && res.Instances) {
+          const instances = res.Instances;
 
-      const instance = result.Reservations[0].Instances[0];
-      queryResult = queryResult || (instance.State.Name == "running");
+          // Check instance and status
+          queryResult = queryResult || (instances.length == 1);
+    
+          const instance = instances[0];
+          queryResult = queryResult || (instance.State && instance.State.Name == "running");
+    
+        } else {
+          queryResult = false;
+        }
+      }
 
-      return queryResult;
-    }
+    return queryResult;
+  }
 
     toString() {
         return `VPC: ${this.name}`;

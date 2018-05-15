@@ -1,10 +1,11 @@
 import { VPC } from '../src/VPC'
-import { callbackSuccessReturning, nvp, testVpc } from './support'
+import { callbackSuccessReturning, nvp } from './support'
+import { testVpc } from './VPC.stub'
 var AWSMock = require('aws-sdk-mock')
 var sinon = require('sinon')
 
 describe("VPCObject#shouldExist function", () =>{
-    let vpc: VPC = undefined;
+    let vpc: VPC;
 
     let withMockedDescribeEndpointResult = (result) =>
         {return AWSMock.mock('EC2', 'describeVpcs', callbackSuccessReturning(result));}
@@ -12,8 +13,6 @@ describe("VPCObject#shouldExist function", () =>{
     beforeEach(() => { vpc = new VPC(testVpc.name, testVpc.region);} )
 
     afterEach(() => AWSMock.restore('EC2') )
-
-    it("exists on the object", () => expect(vpc.shouldExist).toBeDefined() )
 
     it("passes the vpc name to the AWS SDK", async () => {
         const mock = sinon.spy(callbackSuccessReturning(testVpc.validVpcResult));

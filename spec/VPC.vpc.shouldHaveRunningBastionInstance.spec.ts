@@ -1,12 +1,13 @@
 import { VPC } from '../src/VPC'
-import { callbackSuccessReturning, nvp, testVpc } from './support'
+import { callbackSuccessReturning, nvp } from './support'
+import { testVpc } from './VPC.stub'
 var AWSMock = require('aws-sdk-mock')
 var sinon = require('sinon')
 
 describe("VPCObject#shouldHaveRunningBastionInstance function", () =>{
 
-    let vpc: VPC = undefined;
-    let testMethod = undefined;
+    let vpc: VPC;
+    let testMethod;
 
     let withMockedDescribeEndpointResult = (result) => {
         AWSMock.mock('EC2', 'describeVpcs', callbackSuccessReturning(testVpc.validVpcResult));
@@ -16,8 +17,6 @@ describe("VPCObject#shouldHaveRunningBastionInstance function", () =>{
     beforeEach(() => { vpc = new VPC(testVpc.name, testVpc.region); })
 
     afterEach(() => AWSMock.restore('EC2') )
-
-    it("exists on the object", () => expect(vpc.shouldHaveRunningBastionInstance).toBeDefined() )
 
     it("passes the vpc name to the AWS SDK", async () => {
         const mock = sinon.spy(callbackSuccessReturning(testVpc.validEC2EndpointResult));
@@ -48,4 +47,4 @@ describe("VPCObject#shouldHaveRunningBastionInstance function", () =>{
         expect(await vpc.shouldHaveRunningBastionInstance()).toEqual(false);
     })
 
-}
+})

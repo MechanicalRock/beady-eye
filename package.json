@@ -1,13 +1,20 @@
 {
   "name": "beady-eye",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "description": "",
   "main": ".build/src/index.js",
   "scripts": {
-    "clean": "rm -rf .build",
     "build": "tsc",
+    "clean": "rm -rf .build",
+    "ci:upgrade-dependencies": "./upgrade-dependencies.sh",
+    "dependency:upgrade": "yarn upgrade --latest",
+    "deploy:dev": "serverless deploy --stage dev",
     "lint": "eslint .",
     "lint-fix": "eslint . --fix",
+    "package": "serverless package",
+    "preversion": "yarn run build",
+    "prepublish": "yarn run build",
+    "release": "yarn run clean && yarn version && yarn run test && npm login && npm publish && yarn run test:security-monitor && git push && git push --tags",
     "test": "jest",
     "test:approval": "yarn build && node .build/test-data/approval-test-generator.js",
     "test:watch": "jest --watch",
@@ -16,12 +23,7 @@
     "test:accept": "TMPDIR=/tmp cucumber-js spec",
     "test:security": "snyk test",
     "test:security-monitor": "snyk monitor",
-    "test:cover": "jasmine --coverage",
-    "package": "serverless package",
-    "deploy:dev": "serverless deploy --stage dev",
-    "preversion": "yarn run build",
-    "prepublish": "yarn run build",
-    "release": "yarn run clean && yarn version && yarn run test && npm login && npm publish && yarn run test:security-monitor"
+    "test:cover": "jasmine --coverage"
   },
   "repository": {
     "type": "git",
@@ -32,7 +34,7 @@
   "license": "MIT",
   "homepage": "https://github.com/MechanicalRock/beady-eye",
   "dependencies": {
-    "aws-sdk": "^2.94.0",
+    "aws-sdk": "^2.238.1",
     "chai": "^4.1.2",
     "lodash.ismatch": "^4.4.0"
   },
@@ -40,11 +42,11 @@
     "@types/chai": "^4.1.3",
     "@types/jest": "^22.2.3",
     "@types/lodash.ismatch": "^4.4.3",
-    "@types/node": "^10.0.0",
-    "aws-sdk-mock": "^1.7.0",
+    "@types/node": "^6.0.110",
+    "aws-sdk-mock": "^2.0.0",
     "jest": "^22.4.3",
-    "snyk": "^1.78.0",
-    "ts-jest": "^22.4.4",
+    "snyk": "^1.80.0",
+    "ts-jest": "^22.4.6",
     "typescript": "^2.8.3"
   },
   "jest": {
