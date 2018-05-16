@@ -2,7 +2,10 @@ import { RDS as AwsRDS } from 'aws-sdk'
 import { AWSService } from './AWSService'
 import { expect } from 'chai'
 
+
 export class RDS extends AWSService {
+
+    matchingDbData: object;
 
     constructor(name: string, region: string, role?: IamRole) {
         super('RDS', AwsRDS, name, region, role);
@@ -39,8 +42,24 @@ export class RDS extends AWSService {
       }
 
       return false;
-
     }
 
+    async canMakeConnection(timeout_ms=1000) {
+        if (this.matchingDbData === undefined) {
+            if (await this.shouldExist() === false) return false;
+        }
+
+        try {
+            await this.tryConnection(this.matchingDbData.Endpoint.Port,
+                                    this.matchingDbData.Endpoint.Address,
+                                    timeout_ms);
+        }
+        catch (error) {
+            return false;
+        }
+
+        return true;
+
+    }
 
 }
