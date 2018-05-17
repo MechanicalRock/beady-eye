@@ -29,8 +29,8 @@ describe("RDSObject#canMakeConnection function", () => {
 
     afterEach(() => {
         AWSMock.restore('RDS');
-        net.createConnection.restore()
-         }
+        net.createConnection.restore();
+    })
 
     it("tests the connection to the endpoint address", async () => {
         withMockedConnectionResult('connect');
@@ -49,4 +49,5 @@ describe("RDSObject#canMakeConnection function", () => {
         withMockedConnectionResult(undefined);
         expect(await rds.canMakeConnection()).toEqual(false);
     })
+
 })
