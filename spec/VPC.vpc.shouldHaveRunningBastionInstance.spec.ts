@@ -14,13 +14,9 @@ describe("VPCObject#shouldHaveRunningBastionInstance function", () =>{
         AWSMock.mock('EC2', 'describeInstances', callbackSuccessReturning(result));
     }
 
-    beforeEach(() => { 
-        vpc = new VPC(testVpc.name, undefined, testVpc.region); 
-    })
+    beforeEach(() => { vpc = new VPC(testVpc.name, testVpc.region); })
 
-    afterEach(() => {
-        AWSMock.restore('EC2')
-    })
+    afterEach(() => AWSMock.restore('EC2') )
 
     it("passes the vpc name to the AWS SDK", async () => {
         const mock = sinon.spy(callbackSuccessReturning(testVpc.validEC2EndpointResult));
