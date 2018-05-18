@@ -10,7 +10,7 @@ describe("VPCObject#shouldExist function", () =>{
     let withMockedDescribeEndpointResult = (result) =>
         {return AWSMock.mock('EC2', 'describeVpcs', callbackSuccessReturning(result));}
 
-    beforeEach(() => { vpc = new VPC(testVpc.name, undefined, testVpc.region);} )
+    beforeEach(() => { vpc = new VPC(testVpc.name, testVpc.region);} )
 
     afterEach(() => AWSMock.restore('EC2') )
 
