@@ -12,6 +12,10 @@ export const callbackSuccessReturning = (result) => {
     return (params, callback) => callback(null, result)
 }
 
+export const callbackFailure = (result) => {
+    return(params,callback) => callback(new Error(result))
+}
+
 export const awsMockCallback = (filename) => {
     let response = readJson(filename)
 
