@@ -1,9 +1,9 @@
 import { RDS as AwsRDS } from 'aws-sdk'
-import { AWSService, IamRole } from './AWSService'
-import { expect } from 'chai'
+import { ConnectableAWSService, IamRole } from './ConnectableAWSService'
+import { endpointAddress } from './interfaces'
 
 
-export class RDS extends AWSService {
+export class RDS extends ConnectableAWSService {
 
     matchingDbData: AwsRDS.DBInstance;
 
@@ -22,7 +22,7 @@ export class RDS extends AWSService {
       if (result && result.DBInstances && result.DBInstances[0]) {
         // Store matching VPC data
         this.matchingDbData = result.DBInstances[0];
-  
+
         return result.DBInstances.length == 1;
       }
 
@@ -44,22 +44,15 @@ export class RDS extends AWSService {
       return false;
     }
 
-    async canMakeConnection(timeout_ms=1000) {
-        if (this.matchingDbData === undefined) {
-            if (await this.shouldExist() === false) return false;
-        }
+    async getAddress() : Promise<endpointAddress | null> {
+      if (this.matchingDbData === undefined) {
+        if (await this.shouldExist() === false) return null;
+      }
 
-        try {
-            await this.tryConnection(this.matchingDbData!.Endpoint!.Port,
-                                    this.matchingDbData!.Endpoint!.Address,
-                                    timeout_ms);
-        }
-        catch (error) {
-            return false;
-        }
-
-        return true;
-
+      let address: endpointAddress = { address: this.matchingDbData!.Endpoint!.Address!,
+                                      port: this.matchingDbData!.Endpoint!.Port!
+                                    }
+      return address
     }
 
 }
