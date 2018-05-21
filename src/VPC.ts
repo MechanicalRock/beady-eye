@@ -26,12 +26,6 @@ export class VPC {
       return client;
     }
 
-    reset() {
-      // Reset this instance. Mainly used for testing, but will need to be called if you expect
-      // that an VPC has been taken down
-      this.matchingVpcId = undefined;
-    }
-
     async shouldExist() {
       // Query the VPC via the EC2 instance
       const params = {
