@@ -21,7 +21,7 @@ class connectionTesterMock implements connectionTester {
         this.result = result;
     }
 
-    tryConnectionTo(endpoint: endpointAddress, timeout_ms: number): boolean {
+    async tryConnectionTo(endpoint: endpointAddress, timeout_ms: number): Promise<boolean> {
         this.requestedAddress = endpoint.address;
         this.requestedPort = endpoint.port;
         return this.result;
