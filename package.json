@@ -50,10 +50,28 @@
     "typescript": "^2.8.3"
   },
   "jest": {
+    "globals": {
+      "ts-jest": {
+        "tsConfigFile": "tsconfig.json"
+      }
+    },
+    "roots": [
+      "<rootDir>/src/",
+      "<rootDir>/test/",
+      "<rootDir>/spec/"
+    ],
     "transform": {
       "^.+\\.tsx?$": "ts-jest"
     },
-    "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?)$",
+    "transformIgnorePatterns": [
+      "[/\\\\]node_modules[/\\\\].+\\.(js|jsx|ts|tsx)$"
+    ],
+    "testMatch": [
+      "<rootDir>/test/**/?(*.)(spec|test).ts?x)",
+      "<rootDir>/spec/**/?(*.)(spec|test).ts?(x)",
+      "**/*.steps.ts?(x)"
+    ],
+    "testEnvironment": "node",
     "moduleFileExtensions": [
       "ts",
       "tsx",
