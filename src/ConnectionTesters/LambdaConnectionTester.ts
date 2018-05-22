@@ -19,7 +19,8 @@ export class LambdaConnectionTester implements connectionTester {
             InvocationType: "RequestResponse",
             Payload: JSON.stringify({
                             endpointAddress: endpoint.address,
-                            endpointPort: endpoint.port
+                            endpointPort: endpoint.port,
+                            connectionTimeout_ms: timeout_ms
                             })
             }
 

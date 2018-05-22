@@ -54,19 +54,6 @@ export abstract class AWSService {
       return result;
     }
 
-    tryConnection(port, address, timeout_ms) {
-      let p = new Promise((resolve, reject) => {
-        let s = net.createConnection(port, address);
-        s.on('connect', () => { s.destroy(); resolve(true)} );
-        s.on('error', () => { s.destroy(); reject(false)} );
-
-        // If there has been no response, naturally terminate the socket/promise
-        setTimeout(() => {s.destroy(); reject(false)}, timeout_ms);
-        });
-
-      return p;
-
-    }
     toString() {
         return `${this.typeName}: ${this.name}`;
     }

@@ -1,6 +1,6 @@
 // lambda connection tester
 'use strict';
-
+var net = require('net');
 /**
  * Test connection to a destination host/port.
  *
@@ -13,37 +13,51 @@
  * @param {Object} ext Extended properties containing references to injected
  *        properties such as config, logger, etc.
  */
-exports.connect = function(event, context, callback) {
 
+exports.connect = function(event, context, callback) {
     if (!event || !event.endpointAddress || !event.endpointPort) {
-        return callback(new Error("Connection failed.  Event data missing"));
+        return callback(new Error("Invalid call: Event data missing"));
     }
 
     if (!isInt(event.endpointPort)) {
-        return callback(new Error('Connection failed.  Event data malformed: "destinationPort" should be an integer'));
+        return callback(new Error('Invalid call:  Event data malformed: "destinationPort" should be an integer'));
     }
 
-    var socket = new require('net').Socket().setTimeout(1000);
-
     var connectionSuccessful = false;
+    var timeoutRef = undefined;
 
+    var socket = net.createConnection(event.endpointPort, event.endpointAddress);
     socket.on('error', function() {
+        clearTimeout(timeoutRef);
         socket.end();
-        fail(event, context, callback);
-    }).on('timeout', function() {
-        socket.end();
-        fail(event, context, callback);
+        fail(event, callback);
     });
-    socket.connect(event.endpointPort, event.endpointAddress, function() {
-        socket.end();
-        callback(null, {
-            result: true
-        });
-    })
+    socket.on('connect', function() {
+        clearTimeout(timeoutRef);
+        try{
+            socket.end();
+        } catch (e) {
+            socket.destroy();
+        }
+        callback(null, {result: true});
+    });
 
+    if (event.connectionTimeout_ms) {
+        timeoutRef = setTimeout(function() {
+            try{
+                socket.end();
+            } catch (e) {
+                console.log('Error ending socket');
+                console.log(e);
+            }
+            console.log('Destroying socket after timeout')
+            socket.destroy();
+            callback(null, {result: false});
+        }, event.connectionTimeout_ms);
+    }
 };
 
-function fail(event, context, callback) {
+function fail(event, callback) {
     const util = require('util');
     var msg = util.format("Connection failed to %s:%s", event.endpointAddress, event.endpointPort)
     callback(new Error(msg));

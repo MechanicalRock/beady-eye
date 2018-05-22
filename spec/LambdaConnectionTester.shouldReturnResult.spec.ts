@@ -49,7 +49,24 @@ describe("a connection testing example", ()=> {
         const expectedParams = { 
             FunctionName: 'ConnectionTestFunctionName',
             InvocationType: 'RequestResponse',
-            Payload: '{"endpointAddress":"mythical.host","endpointPort":31337}'
+            Payload: '{"endpointAddress":"mythical.host","endpointPort":31337,"connectionTimeout_ms":1234}'
+        };
+        await lambdaConnectionTester.tryConnectionTo(endpointAddress, 1234)
+        expect(mock.calledOnce).toEqual(true);
+        expect(mock.calledWith(expectedParams)).toEqual(true);
+    })
+
+    it("should pass through a defaulted timeout parameter if it is missing", async () => {
+        // test that the payload is correct:
+        // - endpoint
+        // - invocation type
+        // - function name
+        const mock = sinon.spy(callbackSuccessReturning(lambdaResponseData.successResult));
+        AWSMock.mock('Lambda','invoke',mock)
+        const expectedParams = { 
+            FunctionName: 'ConnectionTestFunctionName',
+            InvocationType: 'RequestResponse',
+            Payload: '{"endpointAddress":"mythical.host","endpointPort":31337,"connectionTimeout_ms":2000}'
         };
         await lambdaConnectionTester.tryConnectionTo(endpointAddress)
         expect(mock.calledOnce).toEqual(true);
