@@ -14,7 +14,7 @@
     "package": "serverless package",
     "preversion": "yarn run build",
     "prepublish": "yarn run build",
-    "release": "yarn run clean && yarn version && yarn run test && npm login && npm publish && yarn run test:security-monitor && git push && git push --tags",
+    "release": "yarn run clean && yarn run build && yarn version && yarn run test && npm login && npm publish && yarn run test:security-monitor && git push && git push --tags",
     "test": "jest",
     "test:approval": "yarn build && node .build/test-data/approval-test-generator.js",
     "test:watch": "jest --watch",
