@@ -6,29 +6,26 @@ var sinon = require('sinon')
 var AWSMock = require('aws-sdk-mock')
 
 describe("a connection testing example", ()=> {
-    let lambdaConnectionTester = new LambdaConnectionTester('ConnectionTestFunctionName')
+    let lambdaConnectionTester = new LambdaConnectionTester('ConnectionTestFunctionName', 'aws-region')
     let endpointAddress = {address : 'mythical.host', port: 31337}
-    let withMockedConnectionResult = (result) => {
-
-    }
 
     afterEach( () => {
         AWSMock.restore('Lambda')
     })
 
-    it("should return true when the lambda connection tester returns true",async () => {
+    it("should return true when the lambda connection tester returns true", async () => {
         AWSMock.mock('Lambda','invoke',callbackSuccessReturning(lambdaResponseData.successResult))
         let response = await lambdaConnectionTester.tryConnectionTo(endpointAddress)
         expect(response).toBe(true)
     })
 
-    it("should return false when the lambda connection tester returns false",async () => {
+    it("should return false when the lambda connection tester returns false", async () => {
         AWSMock.mock('Lambda','invoke',callbackSuccessReturning(lambdaResponseData.failureResult))
         let response = await lambdaConnectionTester.tryConnectionTo(endpointAddress)
         expect(response).toBe(false)
     })
 
-    it("should throw an Error when the lambda connection tester failed or timed out",async () => {
+    it("should throw an Error when the lambda connection tester failed or timed out", async () => {
         let msg = 'Lambda executionFailed'
         AWSMock.mock('Lambda','invoke',callbackFailure(msg))
         try {

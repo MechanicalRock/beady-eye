@@ -50,7 +50,6 @@ exports.connect = function(event, context, callback) {
                 console.log('Error ending socket');
                 console.log(e);
             }
-            console.log('Destroying socket after timeout')
             socket.destroy();
             callback(null, {result: false});
         }, event.connectionTimeout_ms);
