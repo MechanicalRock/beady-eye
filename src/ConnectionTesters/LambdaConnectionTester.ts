@@ -5,15 +5,17 @@ import { endpointAddress, connectionTester } from '../interfaces'
 export class LambdaConnectionTester implements connectionTester {
 
     lambdaFunctionName: string;
+    region: string;
 
-    constructor(lambdaFunctionName: string) {
+    constructor(lambdaFunctionName: string, region: string) {
         this.lambdaFunctionName = lambdaFunctionName;
+        this.region = region;
 
     }
 
     async tryConnectionTo(endpoint: endpointAddress, timeout_ms: number = 2000): Promise<boolean> {
         // Invoke the lambda by its function name
-        let lambda = new AwsLambda()
+        let lambda = new AwsLambda({ region: this.region })
         const lambdaParams = {
             FunctionName: this.lambdaFunctionName,
             InvocationType: "RequestResponse",
