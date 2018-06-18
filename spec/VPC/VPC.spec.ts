@@ -1,4 +1,4 @@
-import { VPC } from '../src/VPC'
+import { VPC } from '../../src/VPC'
 
 describe ("VPC Module", () => {
 

@@ -1,5 +1,5 @@
-import { VPC } from '../src/VPC'
-import { callbackSuccessReturning, nvp } from './support'
+import { VPC } from '../../src/VPC'
+import { callbackSuccessReturning, nvp } from '../support'
 import { testVpc } from './VPC.stub'
 
 var AWSMock = require('aws-sdk-mock')

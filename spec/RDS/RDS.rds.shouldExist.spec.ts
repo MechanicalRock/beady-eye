@@ -1,14 +1,14 @@
-import { RDS } from '../src/RDS'
-import { callbackSuccessReturning, nvp } from './support'
+import { RDS } from '../../src/RDS'
+import { callbackSuccessReturning, nvp } from '../support'
 import { testRds } from './RDS.stub'
 var AWSMock = require('aws-sdk-mock')
 var sinon = require('sinon')
 
-describe("RDSObject#shouldMatchPropertyValue function", () => {
+describe("RDSObject#shouldExist function", () =>{
     let rds: RDS;
 
     let withMockedDescribeEndpointResult = (result) =>
-        {   AWSMock.mock('RDS', 'describeDBInstances', callbackSuccessReturning(result));}
+        {return AWSMock.mock('RDS', 'describeDBInstances', callbackSuccessReturning(result));}
 
     beforeEach(() => { rds = new RDS(testRds.name, testRds.region);} )
 
@@ -23,29 +23,19 @@ describe("RDSObject#shouldMatchPropertyValue function", () => {
         expect(mock.calledWith(expectedParams)).toEqual(true);
     })
 
-    it("returns true if the RDS matches the given property value", async () => {
-        withMockedDescribeEndpointResult(testRds.validRdsResultWithEngine);
-        expect(await rds.shouldHavePropertyValue('Engine', 'postgres')).toEqual(true);
-    })
-
-    it("returns false if the RDS dos not match the given property value", async () => {
-        withMockedDescribeEndpointResult(testRds.validRdsResultWithEngine);
-        expect(await rds.shouldHavePropertyValue('Engine', 'mysql')).toEqual(false);
-    })
-
-    it("returns false when the named RDS property does not exist", async () => {
+    it("returns true when the named RDS exists", async () => {
         withMockedDescribeEndpointResult(testRds.validRdsResult);
-        expect(await rds.shouldHavePropertyValue('Engine', 'postgres')).toEqual(false);
+        expect(await rds.shouldExist()).toEqual(true);
     })
 
     it("returns false when the named RDS does not exist", async () => {
         withMockedDescribeEndpointResult(testRds.emptyRdsResult);
-        expect(await rds.shouldHavePropertyValue('Engine', 'postgres')).toEqual(false);
+        expect(await rds.shouldExist()).toEqual(false);
     })
 
     it("returns false when receiving an undefined response from AWS", async () => {
         withMockedDescribeEndpointResult(undefined);
-        expect(await rds.shouldHavePropertyValue('Engine', 'postgres')).toEqual(false);
+        expect(await rds.shouldExist()).toEqual(false);
     })
 }
 )

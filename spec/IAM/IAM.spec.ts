@@ -1,4 +1,4 @@
-import { roleArn, IAM } from '../src/IAM'
+import { roleArn, IAM } from '../../src/IAM'
 
 describe("IAM", ()=> {
     describe("#roleArn", ()=> {
