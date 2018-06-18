@@ -9,11 +9,18 @@ Beady Eye is a testing framework to support Behaviour Driven Infrastructure on A
 ```
 git clone https://github.com/MechanicalRock/beady-eye
 cd beedy-eye
-yarn install
-yarn link
+npm install
+npm link
 cd /path/to/my/project
-yarn link beady-eye
+npm link beady-eye
 ```
+
+## Continuous Build
+In order to build changes continuously, when working with linked projects, create a separate terminal and run:
+
+`npm run build:watch`
+
+This will automatically re-build upon changes to your beady-eye source, so it is available in your linked project.
 
 ## Generating test data
 Set the details of the account you wish to switch to for test data generation
@@ -23,12 +30,12 @@ export AWS_ACCOUNT_ID='123456
 ```
 
 ```
-yarn run test:approval
+npm run test:approval
 ```
 
 # Releasing
 ```
-yarn run release
+npm run release
 git push
 git push --tags
 ```
