@@ -1,5 +1,5 @@
 import { RDS } from '../../src/RDS'
-import { connectionTester, endpointAddress } from '../src/interfaces'
+import { connectionTester, endpointAddress } from '../../src/interfaces'
 import { callbackSuccessReturning, nvp } from '../support'
 import { testRds } from './RDS.stub'
 var AWSMock = require('aws-sdk-mock')
