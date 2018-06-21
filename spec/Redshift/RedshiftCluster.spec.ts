@@ -1,7 +1,6 @@
 import {RedshiftCluster} from "../../src/Redshift"
 import AWSMock = require('aws-sdk-mock')
 
-
 describe ("RedshiftCluster module", () => {
     let clusterName = "my-redshift-cluster"
     let redshift = new RedshiftCluster(clusterName)

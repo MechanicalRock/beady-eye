@@ -28,6 +28,10 @@ export class RedshiftCluster {
         }
     }
 
+    async allowsConnectionFrom(cidrRance) {
+        return false
+    }
+
     toString() {
         return `RedshiftCluster(${this.clusterName})`
     }

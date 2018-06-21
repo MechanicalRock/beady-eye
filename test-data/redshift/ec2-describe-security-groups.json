@@ -1,0 +1,39 @@
+{
+  "SecurityGroups": [
+    {
+      "Description": "Amazon Redshift security group",
+      "GroupName": "beady-eye-approval-redshift-SecurityGroup-9A11LFSMSG5K",
+      "IpPermissions": [
+        {
+          "FromPort": 5439,
+          "IpProtocol": "tcp",
+          "IpRanges": [
+            {
+              "CidrIp": "0.0.0.0/0"
+            }
+          ],
+          "Ipv6Ranges": [],
+          "PrefixListIds": [],
+          "ToPort": 5439,
+          "UserIdGroupPairs": []
+        }
+      ],
+      "OwnerId": "1234567890",
+      "GroupId": "sg-8ec02ef6",
+      "IpPermissionsEgress": [
+        {
+          "IpProtocol": "-1",
+          "IpRanges": [
+            {
+              "CidrIp": "0.0.0.0/0"
+            }
+          ],
+          "Ipv6Ranges": [],
+          "PrefixListIds": [],
+          "UserIdGroupPairs": []
+        }
+      ],
+      "VpcId": "vpc-61097806"
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+    "globals": {
+        "ts-jest": {
+            "tsConfigFile": "tsconfig.json"
+        }
+    },
+    "rootDir": "..",
+    "roots": [
+        "<rootDir>/test-data/"
+    ],
+    "transform": {
+        "^.+\\.tsx?$": "ts-jest"
+    },
+    "transformIgnorePatterns": [
+        "[/\\\\]node_modules[/\\\\].+\\.(js|jsx|ts|tsx)$"
+    ],
+    "testMatch": [
+        "<rootDir>/**/?(*.)(approval).ts"
+    ],
+    "testEnvironment": "node",
+    "moduleFileExtensions": [
+        "ts",
+        "tsx",
+        "js",
+        "jsx",
+        "json",
+        "node"
+    ]
+}
