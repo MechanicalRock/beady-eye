@@ -29,7 +29,7 @@ const redshiftTests = async (credentials) => {
 describe('Redshift Approval Tests', () => {
     
     let createEnvironment = false
-    let tearDownEnvironment = false
+    let tearDownEnvironment = true
     let stackName = 'beady-eye-approval-redshift'
     
     beforeAll(async (done) => {
@@ -60,17 +60,23 @@ describe('Redshift Approval Tests', () => {
     afterAll(async (done) => {
         if(tearDownEnvironment){
             let cf = new CloudFormation(this.clientParams)
-            await cf.deleteStack({StackName: stackName})
+            let response = await cf.deleteStack({StackName: stackName}).promise()
         }
         done()
     },10*60*1000)
     
+    it('should clean up the approval test stack when finished', ()=> {
+        // this doesn't actually do anything
+        // but is here in case other tests are disabled.
+        expect(tearDownEnvironment).toBe(true)
+    })
+
     xit('should generate test-data for redshift', async (done)=> {
         await redshiftTests(this.creds)
         done()
     })
     
-    it('should generate data for the subnets', async (done) => {
+    xit('should generate data for the subnets', async (done) => {
         var redshift = new Redshift(this.clientParams)
         
         existingClusterName = 'beady-eye-approval-redshift-redshiftcluster-gqlpmk80mi5o'
