@@ -32,20 +32,20 @@ export class RedshiftCluster {
     async allowsConnectionFrom(cidrRange) {
 
         let cluster = await this.getClusterDetails()
-
+        
         let securityGroupIds: string[] = this.getSecurityGroupIdsFrom(cluster)
-
+        
         let allInboundCidrRanges = await this.mapSecurityGroupIdsToInboundCidrRanges(securityGroupIds)
-
+        
         return allInboundCidrRanges.includes(cidrRange)
     }
-
+    
     private getClusterDetails() {
         return this.redshiftClient.describeClusters({
             ClusterIdentifier: this.clusterName
         }).promise()
     }
-
+    
     private getSecurityGroupIdsFrom(cluster: AwsRedshift.ClustersMessage){
         expect(cluster.Clusters).not.to.be.undefined
         expect(cluster.Clusters!.length).to.equal(1)
@@ -53,7 +53,7 @@ export class RedshiftCluster {
         let clusterDetails = cluster!.Clusters![0]
         // Redshift Classic instances not currently supported
         expect(clusterDetails.VpcSecurityGroups).not.to.be.undefined
-
+        
         let securityGroupIds: string[] = clusterDetails!.VpcSecurityGroups!.map((securityGroup: AwsRedshift.VpcSecurityGroupMembership): string => {
             if (securityGroup.VpcSecurityGroupId) {
                 return securityGroup.VpcSecurityGroupId
@@ -63,16 +63,19 @@ export class RedshiftCluster {
         })
         return securityGroupIds
     }
-
+    
     private async mapSecurityGroupIdsToInboundCidrRanges(securityGroupIds: string[]){
         let securityGroups = await this.ec2.describeSecurityGroups({
             GroupIds: securityGroupIds
         }).promise()
-
-        let securityGroupResponse: EC2.SecurityGroup[] = securityGroups.SecurityGroups == undefined ? [] : securityGroups.SecurityGroups
-
         
-        let allInboundRules:EC2.IpPermission[] = this.flatten(securityGroupResponse.map(securityGroup => securityGroup.IpPermissions == undefined ? [] : securityGroup.IpPermissions))
+        let securityGroupResponse: EC2.SecurityGroup[] = securityGroups.SecurityGroups == undefined ? [] : securityGroups.SecurityGroups
+        
+        return this.getInboundCidrRangesFrom(securityGroupResponse)
+    }
+    
+    private getInboundCidrRangesFrom(securityGroups: EC2.SecurityGroup[]){
+        let allInboundRules:EC2.IpPermission[] = this.flatten(securityGroups.map(securityGroup => securityGroup.IpPermissions == undefined ? [] : securityGroup.IpPermissions))
         
         // IPV4 only supported at the moment
         let allInboundIpRanges:EC2.IpRange[] = this.flatten(allInboundRules.map(securityGroupRule => securityGroupRule.IpRanges == undefined ? [] : securityGroupRule.IpRanges))
@@ -82,8 +85,14 @@ export class RedshiftCluster {
     }
 
     private flatten(arr: Array<any>) {
-        return arr.reduce((flat, toFlatten) => {
-            flat.concat(Array.isArray(toFlatten) ? this.flatten(toFlatten) : toFlatten)
+        if(arr.length == 0){
+            return []
+        }
+
+        return arr.reduce((item, toFlatten) => {
+            let rest = Array.isArray(toFlatten) ? this.flatten(toFlatten) : toFlatten
+            let arr = item instanceof Array ? item : [item]
+            return arr.concat(rest)
         })
     }
 

@@ -13,4 +13,20 @@ describe ("RedshiftCluster module", () => {
         })
     })
 
+    describe('#flatten', () => {
+        beforeAll(() => {
+            this.redshift = new RedshiftCluster(clusterName)
+        })
+        it('should return [] when flattening []', () => {
+            let actual = this.redshift.flatten([])
+            expect(actual).toEqual([])
+        })
+
+        it('should do nothing on flat arrays', () => {
+            let flatArray = [ 1, 2 ]
+            expect(this.redshift.flatten(flatArray)).toEqual(flatArray)
+        })
+
+    })
+
 })

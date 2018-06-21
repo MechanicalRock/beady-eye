@@ -8,7 +8,7 @@ describe("The Connection-Tester lambda",() => {
     let event = {
             endpointAddress : 'thelocalhost',
             endpointPort : 1234,
-            connectionTimeout_ms : 2000
+            connectionTimeout_ms : 10
     }
 
     let callbackSuccessWithExpectedResult = (result, done) => {
@@ -34,7 +34,7 @@ describe("The Connection-Tester lambda",() => {
         let fakeConnection = () => {
             let s = net.Socket();
             // Fire the intended result, or allow natural timeout if undefined
-            if (result !== undefined) { setTimeout(() => s.emit(result), 200 ); }
+            if (result !== undefined) { setTimeout(() => s.emit(result), 2 ); }
             return s;
         }
         let fakeSocket = sinon.stub(net, 'createConnection').callsFake(fakeConnection)     
