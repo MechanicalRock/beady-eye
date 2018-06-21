@@ -3,7 +3,8 @@ import fs = require('fs')
 import { IAM } from '../src/IAM'
 
 const approvalTest = async () => {
-    try {        
+    try {      
+        // Uncomment to run the desired approval tests to generate test data.  
         // s3Tests( credentials() )
         // stsTests( )
         // stsTests( {externalId: 'Testing'})
@@ -36,6 +37,8 @@ const redshiftTests = async (credentials) => {
     let existingClusterName = 'test-redshift-cluster'
     let notExistsClusterName = 'this-does-not-exist'
     
+    // These require the clusters above to exist/not.  Once created, the test data needs to be scrubbed (TODO)
+    // Uncomment to re-create the test data
     // redshift.describeClusters({ClusterIdentifier: existingClusterName}).promise().then(writeTo('redshift/describeClusters-exists.json'))
     // redshift.describeClusters({ClusterIdentifier: notExistsClusterName}).promise().catch(writeTo('redshift/describeClusters-not-exists.json'))
     

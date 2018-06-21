@@ -11,7 +11,7 @@ describe("RedshiftCluster module", () => {
             AWSMock.restore('Redshift');
         })
         
-        it('should return true when the cluster exists', async done => {
+        it('should return true when the cluster exists', async (done) => {
             AWSMock.mock('Redshift', 'describeClusters', awsMockCallback('test-data/redshift/describeClusters-exists.json'));
             let redshift = new RedshiftCluster(clusterName, 'ap-southeast-2')
             
