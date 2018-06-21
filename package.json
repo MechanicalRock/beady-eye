@@ -5,6 +5,7 @@
   "main": ".build/src/index.js",
   "scripts": {
     "build": "tsc",
+    "build:watch": "nodemon --watch src --legacy-watch --ext ts --exec npm run build --",
     "clean": "rm -rf .build",
     "ci:upgrade-dependencies": "./upgrade-dependencies.sh",
     "dependency:upgrade": "yarn upgrade --latest",
@@ -18,8 +19,6 @@
     "test": "jest",
     "test:approval": "yarn build && node .build/test-data/approval-test-generator.js",
     "test:watch": "jest --watch",
-    "test:it": "TMPDIR=/tmp jasmine --config=spec/support/jasmine.integration.json",
-    "test:wip": "TMPDIR=/tmp jasmine --config=spec/support/jasmine.wip.json",
     "test:accept": "TMPDIR=/tmp cucumber-js spec",
     "test:security": "snyk test",
     "test:security-monitor": "snyk monitor",
@@ -45,6 +44,7 @@
     "@types/node": "^6.0.110",
     "aws-sdk-mock": "^2.0.0",
     "jest": "^22.4.3",
+    "nodemon": "^1.17.5",
     "snyk": "^1.80.0",
     "ts-jest": "^22.4.6",
     "typescript": "^2.8.3"
@@ -57,7 +57,6 @@
     },
     "roots": [
       "<rootDir>/src/",
-      "<rootDir>/test/",
       "<rootDir>/spec/"
     ],
     "transform": {

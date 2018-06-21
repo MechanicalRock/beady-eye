@@ -1,6 +1,6 @@
-import { RDS } from '../src/RDS'
-import { IAM } from '../src/IAM'
-import { callbackSuccessReturning } from './support'
+import { RDS } from '../../src/RDS'
+import { IAM } from '../../src/IAM'
+import { callbackSuccessReturning } from '../support'
 var AWSMock = require('aws-sdk-mock')
 var sinon = require('sinon')
 

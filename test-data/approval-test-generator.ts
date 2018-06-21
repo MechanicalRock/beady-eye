@@ -1,26 +1,51 @@
-import { S3, STS } from 'aws-sdk'
+import { S3, STS, Redshift } from 'aws-sdk'
 import fs = require('fs')
 import { IAM } from '../src/IAM'
 
 const approvalTest = async () => {
     try {        
         // s3Tests( credentials() )
-        stsTests( )
-        stsTests( {externalId: 'Testing'})
+        // stsTests( )
+        // stsTests( {externalId: 'Testing'})
+        redshiftTests(await credentials())
     } catch (err) {
         console.log("Test data generation failed: " + err)
     }
 }
 
-const credentials = async (extraParams?) => {
+const roleNameWithoutAccess = 'beady-eyeDeniedRole'
+
+const credentialsForRole = async (roleName, extraParams?) => {
     let accountId: string = process.env['AWS_ACCOUNT_ID'] || 'unknown'
     let opts = {
-        roleName: 'Obsidian',
+        roleName: roleName,
         accountId: accountId,        
     }    
     return  await IAM.role({...opts,...extraParams}).credentials()
+
 }
 
+const credentials = async (extraParams?) => {
+    let roleName = process.env['AWS_ROLE_NAME'] || 'unknown'
+    return credentialsForRole(roleName,extraParams)
+}
+
+const redshiftTests = async (credentials) => {
+    var redshift = new Redshift({credentials: credentials, region: 'ap-southeast-2'})
+    
+    let existingClusterName = 'test-redshift-cluster'
+    let notExistsClusterName = 'this-does-not-exist'
+    
+    // redshift.describeClusters({ClusterIdentifier: existingClusterName}).promise().then(writeTo('redshift/describeClusters-exists.json'))
+    // redshift.describeClusters({ClusterIdentifier: notExistsClusterName}).promise().catch(writeTo('redshift/describeClusters-not-exists.json'))
+    
+    
+    var deniedCreds = await credentialsForRole(roleNameWithoutAccess)
+    var redshiftDenied = new Redshift({credentials: deniedCreds, region: 'ap-southeast-2'})
+
+    redshiftDenied.describeClusters({ClusterIdentifier: existingClusterName}).promise().catch(writeTo('redshift/describeClusters-denied.json'))
+
+}
 
 const s3Tests = (credentials) => {
     var s3 = new S3({ credentials: credentials })

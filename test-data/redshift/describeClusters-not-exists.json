@@ -1,0 +1,9 @@
+{
+    "message": "Cluster this-does-not-exist not found.",
+    "code": "ClusterNotFound",
+    "time": "2018-06-18T07:17:23.196Z",
+    "requestId": "966093c3-72c7-11e8-907c-396f0e562829",
+    "statusCode": 404,
+    "retryable": false,
+    "retryDelay": 87.12856559008593
+}

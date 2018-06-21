@@ -1,4 +1,4 @@
-import { Credentials, EC2 as AwsEC2 } from 'aws-sdk'
+import { EC2 as AwsEC2 } from 'aws-sdk'
 import { expect } from 'chai'
 
 export class VPC {

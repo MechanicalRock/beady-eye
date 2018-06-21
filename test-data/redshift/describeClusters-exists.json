@@ -1,0 +1,57 @@
+{
+    "ResponseMetadata": {
+        "RequestId": "07761e57-72c7-11e8-a710-378dff80dd52"
+    },
+    "Clusters": [
+        {
+            "ClusterIdentifier": "test-redshift-cluster",
+            "NodeType": "dc2.large",
+            "ClusterStatus": "available",
+            "MasterUsername": "master_user",
+            "DBName": "database_name",
+            "Endpoint": {
+                "Address": "test-redshift-cluster.c7xqwexample.ap-southeast-2.redshift.amazonaws.com",
+                "Port": 5439
+            },
+            "ClusterCreateTime": "2018-06-18T06:11:04.740Z",
+            "AutomatedSnapshotRetentionPeriod": 1,
+            "ClusterSecurityGroups": [],
+            "VpcSecurityGroups": [
+                {
+                    "VpcSecurityGroupId": "sg-12345abcd",
+                    "Status": "active"
+                }
+            ],
+            "ClusterParameterGroups": [
+                {
+                    "ParameterGroupName": "default.redshift-1.0",
+                    "ParameterApplyStatus": "in-sync",
+                    "ClusterParameterStatusList": []
+                }
+            ],
+            "ClusterSubnetGroupName": "default",
+            "VpcId": "vpc-abcd1234",
+            "AvailabilityZone": "ap-southeast-2c",
+            "PreferredMaintenanceWindow": "fri:13:30-fri:14:00",
+            "PendingModifiedValues": {},
+            "ClusterVersion": "1.0",
+            "AllowVersionUpgrade": true,
+            "NumberOfNodes": 1,
+            "PubliclyAccessible": true,
+            "Encrypted": true,
+            "ClusterPublicKey": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCaIpDdgUT8UdyAOdpIofq0/ebteoWRzhZurGbIdSPYCJD3IhuIuYygex5qWHSIOA4LHzDXTcNI2HIxc9ccMPVQPyBmwLTdApH/E0WaDaufDn9//JQ5KtaeMStQ/7ZMf2Axxi1YgyFTAGu51g8feuUwF0Imny/oiSB0UaGL10IiOy79nKJbqWJpC7Z/49uyubLO0Ouz/3/qm6FHC1vzzf3hqkv11PFYDo7ZmJ6s0IDsYZbDayeEoVYyeQ77bvJh4bWHtPBrIrG6T9rM7eGcVIACCE+JnxhCeUAijpwrGj7eDMw1Bqw1CmUwGMSmKDNRvwOg+pbpOxKAPo/IrdX1fQNj Amazon-Redshift\n",
+            "ClusterNodes": [
+                {
+                    "NodeRole": "SHARED",
+                    "PrivateIPAddress": "172.31.27.188",
+                    "PublicIPAddress": "13.211.184.201"
+                }
+            ],
+            "ClusterRevisionNumber": "2610",
+            "Tags": [],
+            "KmsKeyId": "arn:aws:kms:ap-southeast-2:598112752826:key/581c0426-832b-4847-ae9d-ce967bffbc4b",
+            "EnhancedVpcRouting": false,
+            "IamRoles": []
+        }
+    ]
+}
