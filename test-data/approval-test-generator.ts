@@ -1,6 +1,8 @@
 import { S3, STS } from 'aws-sdk'
 import fs = require('fs')
 import { IAM } from '../src/IAM'
+import { writeTo, credentials, credentialsForRole } from './utils'
+
 
 const approvalTest = async () => {
     try {      
@@ -14,21 +16,6 @@ const approvalTest = async () => {
 }
 
 const roleNameWithoutAccess = 'beady-eyeDeniedRole'
-
-const credentialsForRole = async (roleName, extraParams?) => {
-    let accountId: string = process.env['AWS_ACCOUNT_ID'] || 'unknown'
-    let opts = {
-        roleName: roleName,
-        accountId: accountId,        
-    }    
-    return  await IAM.role({...opts,...extraParams}).credentials()
-
-}
-
-const credentials = async (extraParams?) => {
-    let roleName = process.env['AWS_ROLE_NAME'] || 'unknown'
-    return credentialsForRole(roleName,extraParams)
-}
 
 const s3Tests = (credentials) => {
     var s3 = new S3({ credentials: credentials })
@@ -90,13 +77,6 @@ const stsTests = async (externalId?) => {
         fs.writeFileSync('test-data/assumeRole-granted.json',JSON.stringify(creds))
     } catch(e) {
         fs.writeFileSync('test-data/assumeRole-denied.json',JSON.stringify(e))
-    }
-}
-
-// TODO - refactor - pulled up
-const writeTo = (filename) => {
-    return (result) => {
-        fs.writeFileSync(`test-data/${filename}`, JSON.stringify(result))
     }
 }
 
