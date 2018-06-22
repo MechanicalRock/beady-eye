@@ -1,6 +1,6 @@
 import { S3 } from '../../src/S3'
 import { awsMockCallback, awsMockFailureCallback } from '../support'
-import AWSMock = require('aws-sdk-mock')
+import * as AWSMock from 'aws-sdk-mock'
 
 describe('S3.bucket#canPutObject', () => {
     let bucketName = "myS3Bucket"

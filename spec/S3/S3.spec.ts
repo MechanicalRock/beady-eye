@@ -1,5 +1,5 @@
 import {S3} from '../../src/S3'
-import AWSMock = require('aws-sdk-mock')
+import * as AWSMock from 'aws-sdk-mock'
 
 
 describe ("S3 module", () => {

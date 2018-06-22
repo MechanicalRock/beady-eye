@@ -1,57 +1,56 @@
 {
-    "ResponseMetadata": {
-        "RequestId": "07761e57-72c7-11e8-a710-378dff80dd52"
-    },
-    "Clusters": [
+  "ResponseMetadata": {
+    "RequestId": "cd66b3e3-7530-11e8-907c-396f0e562829"
+  },
+  "Clusters": [
+    {
+      "ClusterIdentifier": "test-redshift-cluster",
+      "NodeType": "dc2.large",
+      "ClusterStatus": "available",
+      "MasterUsername": "abdacefe0-7524-11e8-8012-9b673edc41c1",
+      "DBName": "test-redshift-cluster",
+      "Endpoint": {
+        "Address": "test-redshift-cluster.c7xqwt2jzuyc.ap-southeast-2.redshift.amazonaws.com",
+        "Port": 5439
+      },
+      "ClusterCreateTime": "2018-06-21T07:34:26.363Z",
+      "AutomatedSnapshotRetentionPeriod": 1,
+      "ClusterSecurityGroups": [],
+      "VpcSecurityGroups": [
         {
-            "ClusterIdentifier": "test-redshift-cluster",
-            "NodeType": "dc2.large",
-            "ClusterStatus": "available",
-            "MasterUsername": "master_user",
-            "DBName": "database_name",
-            "Endpoint": {
-                "Address": "test-redshift-cluster.c7xqwexample.ap-southeast-2.redshift.amazonaws.com",
-                "Port": 5439
-            },
-            "ClusterCreateTime": "2018-06-18T06:11:04.740Z",
-            "AutomatedSnapshotRetentionPeriod": 1,
-            "ClusterSecurityGroups": [],
-            "VpcSecurityGroups": [
-                {
-                    "VpcSecurityGroupId": "sg-12345abcd",
-                    "Status": "active"
-                }
-            ],
-            "ClusterParameterGroups": [
-                {
-                    "ParameterGroupName": "default.redshift-1.0",
-                    "ParameterApplyStatus": "in-sync",
-                    "ClusterParameterStatusList": []
-                }
-            ],
-            "ClusterSubnetGroupName": "default",
-            "VpcId": "vpc-abcd1234",
-            "AvailabilityZone": "ap-southeast-2c",
-            "PreferredMaintenanceWindow": "fri:13:30-fri:14:00",
-            "PendingModifiedValues": {},
-            "ClusterVersion": "1.0",
-            "AllowVersionUpgrade": true,
-            "NumberOfNodes": 1,
-            "PubliclyAccessible": true,
-            "Encrypted": true,
-            "ClusterPublicKey": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCaIpDdgUT8UdyAOdpIofq0/ebteoWRzhZurGbIdSPYCJD3IhuIuYygex5qWHSIOA4LHzDXTcNI2HIxc9ccMPVQPyBmwLTdApH/E0WaDaufDn9//JQ5KtaeMStQ/7ZMf2Axxi1YgyFTAGu51g8feuUwF0Imny/oiSB0UaGL10IiOy79nKJbqWJpC7Z/49uyubLO0Ouz/3/qm6FHC1vzzf3hqkv11PFYDo7ZmJ6s0IDsYZbDayeEoVYyeQ77bvJh4bWHtPBrIrG6T9rM7eGcVIACCE+JnxhCeUAijpwrGj7eDMw1Bqw1CmUwGMSmKDNRvwOg+pbpOxKAPo/IrdX1fQNj Amazon-Redshift\n",
-            "ClusterNodes": [
-                {
-                    "NodeRole": "SHARED",
-                    "PrivateIPAddress": "172.31.27.188",
-                    "PublicIPAddress": "13.211.184.201"
-                }
-            ],
-            "ClusterRevisionNumber": "2610",
-            "Tags": [],
-            "KmsKeyId": "arn:aws:kms:ap-southeast-2:598112752826:key/581c0426-832b-4847-ae9d-ce967bffbc4b",
-            "EnhancedVpcRouting": false,
-            "IamRoles": []
+          "VpcSecurityGroupId": "sg-8ec02ef6",
+          "Status": "active"
         }
-    ]
+      ],
+      "ClusterParameterGroups": [
+        {
+          "ParameterGroupName": "default.redshift-1.0",
+          "ParameterApplyStatus": "in-sync",
+          "ClusterParameterStatusList": []
+        }
+      ],
+      "ClusterSubnetGroupName": "beady-eye-approval-redshift-clustersubnetgroup-n140orjhf75w",
+      "VpcId": "vpc-61097806",
+      "AvailabilityZone": "ap-southeast-2a",
+      "PreferredMaintenanceWindow": "mon:13:30-mon:14:00",
+      "PendingModifiedValues": {},
+      "ClusterVersion": "1.0",
+      "AllowVersionUpgrade": true,
+      "NumberOfNodes": 1,
+      "PubliclyAccessible": true,
+      "Encrypted": false,
+      "ClusterPublicKey": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCAd0VP811I0hodAvAV94ySLWtHqi2hB7gWdn4XgsdlEsyDIaYJEmMK/Ve3Q+uqdNuhdfZhsbZzLQ/Ry1JxIKE2s7t0gm0619yVsTgTDTFoDcBtUrUAofULhX0Kk58dmaTQHJ/eoD63WzwYTUXM6iG03abyYEPEPXdQ1QPsi7VGQ2w71I78kG3YA6tY5X4wd3/JcfmTI2Txyy04MBdqxkwXQDvNCDBVbgHY2xDTThasr1X18IhztxCJrVQcicUoSzqL8M8/ksa1ipUcbs2iZfhaiS9HMM4tzm24tgWpIEqAcD3vSRjHAVD5/to2VZ9Wbx4QLctNpTWP+0BGviN/rtS3 Amazon-Redshift\n",
+      "ClusterNodes": [
+        {
+          "NodeRole": "SHARED",
+          "PrivateIPAddress": "10.0.0.157",
+          "PublicIPAddress": "13.236.123.17"
+        }
+      ],
+      "ClusterRevisionNumber": "2610",
+      "Tags": [],
+      "EnhancedVpcRouting": false,
+      "IamRoles": []
+    }
+  ]
 }
