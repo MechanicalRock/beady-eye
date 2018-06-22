@@ -37,7 +37,21 @@ describe("RedshiftCluster class", () => {
         })
 
         describe('when the cluster does not exist', () => {
-            it('should fail')
+            beforeEach(() => {
+                AWSMock.mock('Redshift', 'describeClusters', awsMockFailureCallback('test-data/redshift/describeClusters-not-exists.json'));
+    
+                this.redshift = new RedshiftCluster(clusterName, region)
+            })
+
+            it('should fail', async (done) => {
+                try{
+                    let actual = await this.redshift.externalEndpoint()
+                    fail("Error should have been thrown")
+                }catch(err){
+                    expect(err.code).toBe("ClusterNotFound")
+                    done()
+                }
+            })
         })
 
     })
