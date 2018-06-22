@@ -27,6 +27,11 @@ describe ("RedshiftCluster module", () => {
             expect(this.redshift.flatten(flatArray)).toEqual(flatArray)
         })
 
+        it('should flatten an array', ()=> {
+            let bumpyArray = [ 1, [2,3], [4, [5, 6]] ]
+            expect(this.redshift.flatten(bumpyArray)).toEqual([1, 2, 3, 4, 5, 6])
+        })
+
     })
 
 })
