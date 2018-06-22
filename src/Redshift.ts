@@ -79,16 +79,16 @@ export class RedshiftCluster {
             GroupIds: securityGroupIds
         }).promise()
         
-        let securityGroupResponse: EC2.SecurityGroup[] = securityGroups.SecurityGroups == undefined ? [] : securityGroups.SecurityGroups
+        let securityGroupResponse: EC2.SecurityGroup[] = securityGroups.SecurityGroups || []
         
         return this.getInboundCidrRangesFrom(securityGroupResponse)
     }
     
     private getInboundCidrRangesFrom(securityGroups: EC2.SecurityGroup[]){
-        let allInboundRules:EC2.IpPermission[] = this.flatten(securityGroups.map(securityGroup => securityGroup.IpPermissions == undefined ? [] : securityGroup.IpPermissions))
+        let allInboundRules:EC2.IpPermission[] = this.flatten(securityGroups.map(securityGroup => securityGroup.IpPermissions || [] ))
         
         // IPV4 only supported at the moment
-        let allInboundIpRanges:EC2.IpRange[] = this.flatten(allInboundRules.map(securityGroupRule => securityGroupRule.IpRanges == undefined ? [] : securityGroupRule.IpRanges))
+        let allInboundIpRanges:EC2.IpRange[] = this.flatten(allInboundRules.map(securityGroupRule => securityGroupRule.IpRanges || [] ))
         
         let allInboundCidrRanges = allInboundIpRanges.map(cidr => cidr.CidrIp)
         return allInboundCidrRanges
