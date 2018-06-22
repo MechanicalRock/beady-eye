@@ -1,6 +1,6 @@
 import { RedshiftCluster } from "../../src/Redshift"
 import { awsMockCallback, awsMockFailureCallback } from '../support'
-import AWSMock = require('aws-sdk-mock')
+import * as AWSMock from 'aws-sdk-mock'
 
 
 describe("RedshiftCluster module", () => {

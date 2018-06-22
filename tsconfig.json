@@ -7,16 +7,18 @@
    "outDir": ".build",
    "moduleResolution": "node",
    "lib": ["es2015", "es6", "esnext"],
-   "rootDir": "./",
    "allowJs": true,    
  },
+ "rootDirs": [
+    "./"
+  ],
  "include": [
    "src",    
    "spec",
-   "test-data",
    "src/*.js"
  ],
  "exclude": [
-   "./node_modules"
+   "node_modules",
+   ".build"
  ]
 }

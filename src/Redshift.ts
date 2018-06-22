@@ -39,22 +39,33 @@ export class RedshiftCluster {
         
         return allInboundCidrRanges.includes(cidrRange)
     }
-    
-    private getClusterDetails() {
-        return this.redshiftClient.describeClusters({
-            ClusterIdentifier: this.clusterName
-        }).promise()
+
+    async externalEndpoint(): Promise<AwsRedshift.Endpoint>{
+
+        let cluster = await this.getClusterDetails()
+
+        expect(cluster.Endpoint).not.to.be.undefined
+        return cluster!.Endpoint as AwsRedshift.Endpoint
     }
     
-    private getSecurityGroupIdsFrom(cluster: AwsRedshift.ClustersMessage){
-        expect(cluster.Clusters).not.to.be.undefined
-        expect(cluster.Clusters!.length).to.equal(1)
+    private async getClusterDetails():Promise<AwsRedshift.Cluster> {
+        let clusters = await this.redshiftClient.describeClusters({
+            ClusterIdentifier: this.clusterName
+        }).promise()
+
+        expect(clusters.Clusters).not.to.be.undefined
+        expect(clusters.Clusters!.length).to.equal(1)
         
-        let clusterDetails = cluster!.Clusters![0]
-        // Redshift Classic instances not currently supported
-        expect(clusterDetails.VpcSecurityGroups).not.to.be.undefined
+        let clusterDetails = clusters!.Clusters![0]
+
+        return clusterDetails
+
+    }
+    
+    private getSecurityGroupIdsFrom(cluster: AwsRedshift.Cluster){
+        expect(cluster.VpcSecurityGroups).not.to.be.undefined
         
-        let securityGroupIds: string[] = clusterDetails!.VpcSecurityGroups!.map((securityGroup: AwsRedshift.VpcSecurityGroupMembership): string => {
+        let securityGroupIds: string[] = cluster!.VpcSecurityGroups!.map((securityGroup: AwsRedshift.VpcSecurityGroupMembership): string => {
             if (securityGroup.VpcSecurityGroupId) {
                 return securityGroup.VpcSecurityGroupId
             } else {
