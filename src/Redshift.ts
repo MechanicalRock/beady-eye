@@ -66,11 +66,10 @@ export class RedshiftCluster {
         expect(cluster.VpcSecurityGroups).not.to.be.undefined
         
         let securityGroupIds: string[] = cluster!.VpcSecurityGroups!.map((securityGroup: AwsRedshift.VpcSecurityGroupMembership): string => {
-            if (securityGroup.VpcSecurityGroupId) {
-                return securityGroup.VpcSecurityGroupId
-            } else {
-                return 'unknown' //should not happen
-            }
+
+            expect(securityGroup.VpcSecurityGroupId).not.to.be.undefined
+            return securityGroup.VpcSecurityGroupId as string
+
         })
         return securityGroupIds
     }
