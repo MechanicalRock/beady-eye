@@ -15,7 +15,9 @@
  "include": [
    "src",    
    "spec",
-   "src/*.js"
+   "lambda",
+   "src/*.js",
+   "lambda/*.js"
  ],
  "exclude": [
    "node_modules",

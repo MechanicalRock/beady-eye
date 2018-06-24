@@ -6,3 +6,4 @@ export { RedshiftCluster } from './Redshift'
 
 // All connection testers
 export * from './ConnectionTesters'
+export * from './runners/JasmineComplianceRunner'
