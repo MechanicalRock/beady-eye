@@ -10,7 +10,7 @@ export const lambdaNotificationReporter = (callback: Callback) => {
     passedExpectations : [],
     jasmineDone: function (result) {
       if (result.overallStatus === 'failed') {
-        let failedTests = this.testErrors.map(x => x.fullName).join(',');
+        let failedTests = this.testErrors.map(x => x.fullName).join(', ');
         console.log(this.testErrors);
         callback(new Error("tests failed:" + failedTests));
       } else{
