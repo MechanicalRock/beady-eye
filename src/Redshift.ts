@@ -2,10 +2,10 @@ import { Redshift as AwsRedshift, EC2 } from 'aws-sdk'
 import { expect } from 'chai'
 import { region } from 'aws-sdk/clients/health';
 import { ConnectableAWSService } from './ConnectableAWSService'
-import { endpointAddress } from './interfaces'
+import { endpointAddress, connectable } from './interfaces'
 
 
-export class RedshiftCluster extends ConnectableAWSService{
+export class RedshiftCluster implements connectable{
     clusterName: string
     redshiftClient: AwsRedshift
     ec2: EC2
