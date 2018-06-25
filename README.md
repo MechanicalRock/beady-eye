@@ -4,6 +4,56 @@
 
 Beady Eye is a testing framework to support Behaviour Driven Infrastructure on AWS components, to keep an eye on your infrastructure compliance!
 
+# Getting Started
+
+Create your compliance test my-compliance-test.js:
+NOTE: compliance tests need to be `.js`
+```
+module.exports.suite = (params) => {
+    describe("My Redshift Cluster", () => {
+        let redshiftClusterName = 'my-redshift-cluster'
+
+        beforeAll((done)=> {
+        
+            const bdi = require('beady-eye')
+            const RedshiftCluster = bdi.RedshiftCluster
+            
+            this.redshift = new RedshiftCluster(redshiftClusterName, region)
+            done()
+        })
+
+        it("should exist", async (done) => {
+            expect(this.redshift).toBeDefined()
+            expect(await this.redshift.shouldExist()).toEqual(true)
+            done()
+        })
+    })
+}
+```
+
+Configure your src/complianceTestLambda.ts:
+```
+export const runCompliance: Handler = (event: APIGatewayEvent, context: Context, cb: Callback) => {
+
+  let complianceRunner = new JasmineComplianceRunner(cb)  
+
+  require('./my-compliance-test.js').suite(redshiftParams)
+
+  complianceRunner.execute()
+}
+```
+
+Configure serverless.yaml:
+```
+functions:
+  compliance:
+    handler: src/complianceTests.runCompliance
+    package:
+      include:
+        - src/*.js
+        - node_modules/beady-eye/**
+```
+
 # Development
 
 ```
