@@ -119,18 +119,6 @@ export class RedshiftCluster implements connectable{
         return allInboundCidrRanges
     }
 
-    private flattenOld(arr: Array<any>) {
-        if (arr.length == 0) {
-            return []
-        }
-
-        return arr.reduce((item, toFlatten) => {
-            let rest = Array.isArray(toFlatten) ? flatten(toFlatten) : toFlatten
-            let arr = item instanceof Array ? item : [item]
-            return arr.concat(rest)
-        })
-    }
-
     toString() {
         return `RedshiftCluster(${this.clusterName})`
     }
