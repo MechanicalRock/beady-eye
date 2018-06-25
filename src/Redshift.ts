@@ -3,6 +3,7 @@ import { expect } from 'chai'
 import { region } from 'aws-sdk/clients/health';
 import { ConnectableAWSService } from './ConnectableAWSService'
 import { endpointAddress, connectable } from './interfaces'
+import { flatten } from './util/Arrays'
 
 
 export class RedshiftCluster implements connectable{
@@ -35,11 +36,11 @@ export class RedshiftCluster implements connectable{
     async allowsConnectionFrom(cidrRange) {
 
         let cluster = await this.getClusterDetails()
-        
+
         let securityGroupIds: string[] = this.getSecurityGroupIdsFrom(cluster)
-        
+
         let allInboundCidrRanges = await this.mapSecurityGroupIdsToInboundCidrRanges(securityGroupIds)
-        
+
         return allInboundCidrRanges.includes(cidrRange)
     }
 
@@ -71,24 +72,24 @@ export class RedshiftCluster implements connectable{
         return cluster!.Endpoint as AwsRedshift.Endpoint
 
     }
-    
-    private async getClusterDetails():Promise<AwsRedshift.Cluster> {
+
+    private async getClusterDetails(): Promise<AwsRedshift.Cluster> {
         let clusters = await this.redshiftClient.describeClusters({
             ClusterIdentifier: this.clusterName
         }).promise()
 
         expect(clusters.Clusters).not.to.be.undefined
         expect(clusters.Clusters!.length).to.equal(1)
-        
+
         let clusterDetails = clusters!.Clusters![0]
 
         return clusterDetails
 
     }
-    
-    private getSecurityGroupIdsFrom(cluster: AwsRedshift.Cluster){
+
+    private getSecurityGroupIdsFrom(cluster: AwsRedshift.Cluster) {
         expect(cluster.VpcSecurityGroups).not.to.be.undefined
-        
+
         let securityGroupIds: string[] = cluster!.VpcSecurityGroups!.map((securityGroup: AwsRedshift.VpcSecurityGroupMembership): string => {
 
             expect(securityGroup.VpcSecurityGroupId).not.to.be.undefined
@@ -97,37 +98,25 @@ export class RedshiftCluster implements connectable{
         })
         return securityGroupIds
     }
-    
-    private async mapSecurityGroupIdsToInboundCidrRanges(securityGroupIds: string[]){
+
+    private async mapSecurityGroupIdsToInboundCidrRanges(securityGroupIds: string[]) {
         let securityGroups = await this.ec2.describeSecurityGroups({
             GroupIds: securityGroupIds
         }).promise()
-        
+
         let securityGroupResponse: EC2.SecurityGroup[] = securityGroups.SecurityGroups || []
-        
+
         return this.getInboundCidrRangesFrom(securityGroupResponse)
     }
-    
-    private getInboundCidrRangesFrom(securityGroups: EC2.SecurityGroup[]){
-        let allInboundRules:EC2.IpPermission[] = this.flatten(securityGroups.map(securityGroup => securityGroup.IpPermissions || [] ))
-        
+
+    private getInboundCidrRangesFrom(securityGroups: EC2.SecurityGroup[]) {
+        let allInboundRules: EC2.IpPermission[] = flatten(securityGroups.map(securityGroup => securityGroup.IpPermissions || []))
+
         // IPV4 only supported at the moment
-        let allInboundIpRanges:EC2.IpRange[] = this.flatten(allInboundRules.map(securityGroupRule => securityGroupRule.IpRanges || [] ))
-        
+        let allInboundIpRanges: EC2.IpRange[] = flatten(allInboundRules.map(securityGroupRule => securityGroupRule.IpRanges || []))
+
         let allInboundCidrRanges = allInboundIpRanges.map(cidr => cidr.CidrIp)
         return allInboundCidrRanges
-    }
-
-    private flatten(arr: Array<any>) {
-        if(arr.length == 0){
-            return []
-        }
-
-        return arr.reduce((item, toFlatten) => {
-            let rest = Array.isArray(toFlatten) ? this.flatten(toFlatten) : toFlatten
-            let arr = item instanceof Array ? item : [item]
-            return arr.concat(rest)
-        })
     }
 
     toString() {
