@@ -30,8 +30,8 @@ describe("RedshiftCluster class", () => {
             it('should return the public endpoint details if the cluster exists', async (done) => {
                 let actual = await this.redshift.externalEndpoint()
 
-                expect(actual.Address).toBe("test-redshift-cluster.c7xqwt2jzuyc.ap-southeast-2.redshift.amazonaws.com")
-                expect(actual.Port).toBe(5439)
+                expect(actual.address).toBe("test-redshift-cluster.c7xqwt2jzuyc.ap-southeast-2.redshift.amazonaws.com")
+                expect(actual.port).toBe(5439)
                 done()
             })
         })

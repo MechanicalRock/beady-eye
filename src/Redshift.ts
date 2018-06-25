@@ -1,6 +1,8 @@
 import { Redshift as AwsRedshift, EC2 } from 'aws-sdk'
 import { expect } from 'chai'
 import { region } from 'aws-sdk/clients/health';
+import { endpointAddress } from './interfaces'
+
 
 export class RedshiftCluster {
     clusterName: string
@@ -40,12 +42,16 @@ export class RedshiftCluster {
         return allInboundCidrRanges.includes(cidrRange)
     }
 
-    async externalEndpoint(): Promise<AwsRedshift.Endpoint>{
+    async externalEndpoint(): Promise<endpointAddress>{
 
         let cluster = await this.getClusterDetails()
 
         expect(cluster.Endpoint).not.to.be.undefined
-        return cluster!.Endpoint as AwsRedshift.Endpoint
+
+        return {
+            address: cluster!.Endpoint!.Address as string,
+            port: cluster!.Endpoint!.Port as number
+        }
     }
     
     private async getClusterDetails():Promise<AwsRedshift.Cluster> {
