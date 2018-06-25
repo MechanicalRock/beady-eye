@@ -1,8 +1,11 @@
 import { Redshift as AwsRedshift, EC2 } from 'aws-sdk'
 import { expect } from 'chai'
 import { region } from 'aws-sdk/clients/health';
+import { ConnectableAWSService } from './ConnectableAWSService'
+import { endpointAddress, connectable } from './interfaces'
 
-export class RedshiftCluster {
+
+export class RedshiftCluster implements connectable{
     clusterName: string
     redshiftClient: AwsRedshift
     ec2: EC2
@@ -40,12 +43,33 @@ export class RedshiftCluster {
         return allInboundCidrRanges.includes(cidrRange)
     }
 
+    async getAddress(): Promise<endpointAddress> {
+        let cluster = await this.getClusterDetails()
+
+        expect(cluster.Endpoint).not.to.be.undefined
+
+        return {
+            address: cluster!.Endpoint!.Address as string,
+            port: cluster!.Endpoint!.Port as number
+        }
+    }
+
+
+    /**
+     * Get the endpoint for the RedshiftCluster
+     * @deprecated Use #getAddress() instead.  This method shall be removed in a future version.
+     * @see #getAddress
+     */
     async externalEndpoint(): Promise<AwsRedshift.Endpoint>{
+
+        console.error('externalEndpoint is deprecated.')
 
         let cluster = await this.getClusterDetails()
 
         expect(cluster.Endpoint).not.to.be.undefined
+
         return cluster!.Endpoint as AwsRedshift.Endpoint
+
     }
     
     private async getClusterDetails():Promise<AwsRedshift.Cluster> {
