@@ -58,7 +58,7 @@ functions:
 
 ```
 git clone https://github.com/MechanicalRock/beady-eye
-cd beedy-eye
+cd beady-eye
 npm install
 npm link
 cd /path/to/my/project
