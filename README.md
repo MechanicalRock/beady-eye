@@ -56,6 +56,8 @@ functions:
 
 # Development
 
+**Note:** yarn is required to install beady-eye.
+
 ```
 git clone https://github.com/MechanicalRock/beady-eye
 cd beady-eye
