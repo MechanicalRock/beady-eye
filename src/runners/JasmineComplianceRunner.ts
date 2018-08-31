@@ -1,7 +1,8 @@
 import { APIGatewayEvent, Callback, Context, Handler } from 'aws-lambda';
+import { SpecReporter } from 'jasmine-spec-reporter'
 
 const Jasmine = require('jasmine')
-const TSConsoleReporter = require('jasmine-ts-console-reporter');
+// const TSConsoleReporter = require('jasmine-ts-console-reporter');
 
 export const lambdaNotificationReporter = (callback: Callback) => {
   return {
@@ -41,8 +42,11 @@ const defaultJasmineConfigurer = (jasmine) => {
     // env.fail
     env.clearReporters(); // Clear default console reporter
     env.specFilter = () => true
-    let reporter = new TSConsoleReporter()
-    reporter.setOptions( {showColor : false})
+    let reporter = new SpecReporter({
+      colors: {
+        enabled: false
+      }
+    })
     env.addReporter(reporter);
     //  env.throwOnExpectationFailure(true)
   

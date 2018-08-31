@@ -1,0 +1,90 @@
+service: beady-eye-example-compliance
+
+provider:
+  memorySize: 128
+  name: aws
+  runtime: nodejs8.10
+  region: ap-southeast-2  
+  role: ${self:custom.complianceTestRoleArn}
+  timeout: 60
+custom:
+  stage: ${opt:stage,'dev'}
+  # It is good practise to define a role dedicated for compliance testing within an account
+  complianceTestRoleArn: "arn:aws:iam::${self:custom.dev.accountId}:role/roleComplianceTest"
+
+# you can add packaging information here
+package:
+  individually: true
+  include:
+    - src/*.js
+    - node_modules/beady-eye/**
+  exclude: 
+    - node_modules/**
+
+functions:
+  compliance:
+    handler: src/complianceTests.runCompliance
+    # Kill switch testing takes a while :(
+    package:
+      include:
+        - src/*.js
+        - node_modules/beady-eye/**
+        - node_modules/chai/**
+        - node_modules/assertion-error/**
+        - node_modules/check-error/**
+        - node_modules/deep-eql/**
+        - node_modules/type-detect/**
+        - node_modules/get-func-name/**
+        - node_modules/pathval/**
+        - node_modules/type-detect/**
+        - node_modules/jasmine/**
+        - node_modules/jasmine-promise/**
+        - node_modules/jasmine-ts-console-reporter/**
+        - node_modules/lodash.ismatch/**
+        - node_modules/jasmine/**
+        - node_modules/glob/**
+        - node_modules/fs.realpath/**
+        - node_modules/inflight/**
+        - node_modules/once/**
+        - node_modules/wrappy/**
+        - node_modules/inherits/**
+        - node_modules/minimatch/**
+        - node_modules/once/**
+        - node_modules/wrappy/**
+        - node_modules/path-is-absolute/**
+        - node_modules/jasmine-core/**
+        - node_modules/jasmine-promise/**
+        - node_modules/jasmine-ts-console-reporter/**
+        - node_modules/error-stack-parser/**
+        - node_modules/stackframe/**
+        - node_modules/minimatch/**
+        - node_modules/brace-expansion/**
+        - node_modules/balanced-match/**
+        - node_modules/concat-map/**
+        - node_modules/source-map/**
+        - node_modules/source-map-resolve/**
+        - node_modules/atob/**
+        - node_modules/decode-uri-component/**
+        - node_modules/resolve-url/**
+        - node_modules/source-map-url/**
+        - node_modules/urix/**
+  
+  # Connection Test functions      
+  conntest-external:
+    handler:  src/connectionTester.connect
+    package:
+      # only include connection tester
+      exclude:
+        - src/**
+        - node_modules/**
+      include:
+        - src/connectionTester.js
+        - node_modules/beady-eye/**
+        - '!node_modules/beady-eye/node_modules/aws-sdk/**'
+
+plugins:
+  - serverless-plugin-typescript
+
+
+
+ 
