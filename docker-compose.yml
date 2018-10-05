@@ -6,9 +6,10 @@ services:
     working_dir: /app
     volumes:
       - .:/app:delegated
-      - ~/.aws/:/root/.aws
-      - ~/.gitconfig:/root/.gitconfig
-      - ~/.ssh:/root/.ssh
+      - ~/.aws/:/home/node/.aws
+      - ~/.gitconfig:/home/node/.gitconfig
+      - ~/.gitconfig.local:/home/node/.gitconfig.local
+      - ~/.ssh:/home/node/.ssh
     environment:
       - AWS_ACCESS_KEY_ID
       - AWS_SECRET_ACCESS_KEY
