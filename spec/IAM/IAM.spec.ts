@@ -25,4 +25,11 @@ describe("IAM", ()=> {
         let options = role.getOptions()
         expect(options.ExternalId).toEqual('clientId')        
     })
+    
+    it('should generate STS role paramters for assume Role using ARN', () => {
+        let role = IAM.role({ roleArn: 'arn:aws:iam::1234567:role/myRole' })
+        let options = role.getOptions()
+        expect(options.RoleArn).toEqual('arn:aws:iam::1234567:role/myRole')        
+    })
+
 })
