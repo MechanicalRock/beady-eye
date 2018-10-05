@@ -32,9 +32,4 @@ describe("IAM", ()=> {
         expect(options.RoleArn).toEqual('arn:aws:iam::1234567:role/myRole')        
     })
 
-    // it('should use the roleArn if roleArn is supplied along with constitiuent parts', () => {
-    //     let role = IAM.role({ roleArn: 'arn:aws:iam::2234567:role/foo/barRole', accountId: '1234567', roleName: 'myRole',externalId: 'clientId' })
-    //     let options = role.getOptions()
-    //     expect(options.RoleArn).toEqual('arn:aws:iam::2234567:role/foo/barRole')        
-    // })
 })

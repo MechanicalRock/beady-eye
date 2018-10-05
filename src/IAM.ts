@@ -57,11 +57,15 @@ export const IAM = {
     role: role,
 }
 
+function isRoleParamsWithParts(params: RoleParams | RoleParamsWithParts): params is RoleParamsWithParts {
+    return (params as RoleParams).roleArn === undefined 
+}
+
 export const roleArn = (params: RoleParams): string => {
-    if (params.roleArn) {
-        return params.roleArn
+    if (isRoleParamsWithParts(params)) {
+        return roleArnFromParts(params)
     } else {
-        return roleArnFromParts(params as RoleParamsWithParts)
+        return params.roleArn
     }
 }
 
