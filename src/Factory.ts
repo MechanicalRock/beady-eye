@@ -32,13 +32,16 @@ export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>
 export type OmitWithOptions<T, U> = Omit<ServiceFactory<T, U>, "WithOptions">
 
 export class ServiceFactory<T,U> implements IWithOptions<T, U>, IWithRoleChain<T, U> {
-    private options?: U 
+    private options?: U = undefined
 
     constructor(private stsOptions: STS.ClientConfiguration, private service: Ctor<T,U>) {}
 
     WithOptions(options: U): OmitWithOptions<T,U> {
+        if (this.options !== undefined) {
+            throw new Error("WithOptions has already been called")
+        }
         this.options = options 
-        return this.noOptions()
+        return this as OmitWithOptions<T,U>
     }
 
     async WithRoleChain(...roleRequests: Array<STS.AssumeRoleRequest>): Promise<T> {
@@ -51,10 +54,6 @@ export class ServiceFactory<T,U> implements IWithOptions<T, U>, IWithRoleChain<T
 
         const serviceOptions = Object.assign(clonedeep(this.options), { credentials })
         return new this.service(serviceOptions)
-    }
-
-    private noOptions() {
-        return this as OmitWithOptions<T, U>
     }
 
     private async assumeRole (sts: STS, params: STS.AssumeRoleRequest) {
