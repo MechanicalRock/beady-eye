@@ -26,7 +26,7 @@ export class connectionTesterMock implements connectionTester {
     if( (<endpointAddress>endpointParams).address ){
       return this.tryConnectionTo(<endpointAddress>endpointParams, timeout_ms)
     }else{
-      this.requestedUri = (<uriEndpointAddress>endpointParams).uri;
+      this.requestedUri = (<uriEndpointAddress>endpointParams).Uri;
       return this.result;
     }
   }
