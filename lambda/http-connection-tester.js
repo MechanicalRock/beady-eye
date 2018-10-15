@@ -7,7 +7,7 @@ var request = require('request-promise-native');
  * @param {Object} event The lambda event object. Required properties:
  *          Uri
  *          failOnHTTP
- *          timeout
+ *          connectionTimeout_ms
  *
  * @param {Object} context The lambda context object
  * @param {Function} callback A callback method to signal the completion
@@ -24,7 +24,7 @@ exports.connect = function(event, context, callback) {
     var options = {
         uri: event.Uri,
         resolveWithFullResponse: true,
-        timeout: event.timeout || 20,
+        timeout: event.connectionTimeout_ms || 20,
     };
     
     request(options).then(function(response) {
