@@ -19,55 +19,44 @@ export class LambdaConnectionTester implements connectionTester {
      * @param timeout_ms Timeout in milliseconds
      */
     async tryConnectionTo(endpoint: endpointAddress, timeout_ms: number = 2000): Promise<boolean> {
-        // Invoke the lambda by its function name
-        let lambda = new AwsLambda({ region: this.region })
-        const lambdaParams = {
-            FunctionName: this.lambdaFunctionName,
-            InvocationType: "RequestResponse",
-            Payload: JSON.stringify({
-                            endpointAddress: endpoint.address,
-                            endpointPort: endpoint.port,
-                            connectionTimeout_ms: timeout_ms
-                            })
-            }
-
-        const result = await lambda.invoke(lambdaParams).promise();
-        const payload = JSON.parse(result.Payload!.toString())
-
-        if  ( result.FunctionError === 'Unhandled' ) {
-            throw new Error(`${payload.errorType}: ${payload.errorMessage}`)
-        } 
-
-        return payload.result === true;
+        return this.tryLambdaConnection({
+            endpointAddress: endpoint.address,
+            endpointPort: endpoint.port,
+            connectionTimeout_ms: timeout_ms
+        });
     }
 
     async tryConnectionToV2(endpoint: connectionTesterParams, timeout_ms: number = 2000): Promise<boolean> {
-        if( (<endpointAddress>endpoint).address ){
+        if ((<endpointAddress>endpoint).address) {
             return this.tryConnectionTo(<endpointAddress>endpoint, timeout_ms)
-        }else{
+        } else {
             return this.tryConnectionToUriEndpoint(<uriEndpointAddress>endpoint, timeout_ms);
         }
     }
-    
-    async tryConnectionToUriEndpoint(endpoint: uriEndpointAddress, timeout_ms): Promise<boolean> {
+
+    private async tryLambdaConnection(lambdaPayload: object) {
         // Invoke the lambda by its function name
         let lambda = new AwsLambda({ region: this.region })
         const lambdaParams = {
             FunctionName: this.lambdaFunctionName,
             InvocationType: "RequestResponse",
-            Payload: JSON.stringify({
-                            ...endpoint,
-                            connectionTimeout_ms: timeout_ms
-                            })
-            }
+            Payload: JSON.stringify(lambdaPayload)
+        }
 
         const result = await lambda.invoke(lambdaParams).promise();
         const payload = JSON.parse(result.Payload!.toString())
 
-        if  ( result.FunctionError === 'Unhandled' ) {
+        if (result.FunctionError === 'Unhandled') {
             throw new Error(`${payload.errorType}: ${payload.errorMessage}`)
-        } 
+        }
 
         return payload.result === true;
+    }
+
+    private async tryConnectionToUriEndpoint(endpoint: uriEndpointAddress, timeout_ms): Promise<boolean> {
+        return this.tryLambdaConnection({
+            ...endpoint,
+            connectionTimeout_ms: timeout_ms
+        })
     }
 }

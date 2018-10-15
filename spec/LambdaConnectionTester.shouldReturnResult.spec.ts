@@ -9,7 +9,7 @@ var AWSMock = require('aws-sdk-mock')
 describe("a connection testing example", ()=> {
     let lambdaConnectionTester = new LambdaConnectionTester('ConnectionTestFunctionName', 'aws-region')
     let endpointAddress: endpointAddress = {address : 'mythical.host', port: 31337}
-    let uriEndpointAddress: uriEndpointAddress = { uri: 'http://example.com' }
+    let uriEndpointAddress: uriEndpointAddress = { Uri: 'http://foo.example.com', failOnHTTP: false }
     afterEach( () => {
         AWSMock.restore('Lambda')
     })
@@ -139,7 +139,7 @@ describe("a connection testing example", ()=> {
             const expectedParams = { 
                 FunctionName: 'ConnectionTestFunctionName',
                 InvocationType: 'RequestResponse',
-                Payload: '{"uri: "http://foo.example.com", "connectionTimeout_ms":1234}'
+                Payload: '{"Uri":"http://foo.example.com","failOnHTTP":false,"connectionTimeout_ms":1234}'
             };
             await lambdaConnectionTester.tryConnectionToV2(uriEndpointAddress, 1234)
             expect(mock.calledOnce).toEqual(true);
@@ -156,10 +156,11 @@ describe("a connection testing example", ()=> {
             const expectedParams = { 
                 FunctionName: 'ConnectionTestFunctionName',
                 InvocationType: 'RequestResponse',
-                Payload: '{"uri: "http://foo.example.com", "connectionTimeout_ms":2000}'
+                Payload: '{"Uri":"http://foo.example.com","failOnHTTP":false,"connectionTimeout_ms":2000}'
             };
             await lambdaConnectionTester.tryConnectionToV2(uriEndpointAddress)
             expect(mock.calledOnce).toEqual(true);
+            sinon.assert.calledWith(mock, expectedParams);
             expect(mock.calledWith(expectedParams)).toEqual(true);
         })
     
