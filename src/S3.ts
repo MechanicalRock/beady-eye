@@ -4,7 +4,7 @@ import { IamRole } from './IAM'
 import { expect } from 'chai'
 import { isMatch } from 'lodash'
 
-class S3Bucket {
+export class S3Bucket {
     name;
     role;
     lazyS3Client: AwsS3
@@ -170,7 +170,25 @@ class S3Bucket {
             return false
         }
     }
-
+    async containsFileWithPrefix(prefix: string) {
+        let s3 = (await this.s3Client())
+        try {
+            
+            let response = await s3.listObjectsV2({
+                Bucket: this.name,
+                Prefix : prefix,
+                MaxKeys: 1
+            }).promise();
+            if(response.Contents && response.Contents.length>0) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (e) {
+            expect(e.code).to.equal('AccessDenied')
+            return false
+        }
+    }
     async canPutObject(key: string) {
 
         let s3 = (await this.s3Client())

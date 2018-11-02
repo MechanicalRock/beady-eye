@@ -13,7 +13,7 @@ describe('S3.bucket#canListContents', () => {
         AWSMock.mock('S3', 'listObjects', awsMockCallback('test-data/listObjects-granted.json'));
 
         let response = await S3.bucket(bucketName).canListContents()
-        expect(response).toBe(true)
+        expect(response).toBe(true);
         done()
     })
     
@@ -36,5 +36,4 @@ describe('S3.bucket#canListContents', () => {
             done()
         }
     })
-
 })

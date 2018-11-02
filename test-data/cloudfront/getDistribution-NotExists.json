@@ -1,0 +1,26 @@
+{
+  "message": "Missing credentials in config",
+  "code": "CredentialsError",
+  "errno": "ENETUNREACH",
+  "syscall": "connect",
+  "address": "169.254.169.254",
+  "port": 80,
+  "time": "2018-11-01T08:00:52.866Z",
+  "originalError": {
+    "message": "Could not load credentials from any providers",
+    "code": "CredentialsError",
+    "errno": "ENETUNREACH",
+    "syscall": "connect",
+    "address": "169.254.169.254",
+    "port": 80,
+    "time": "2018-11-01T08:00:52.865Z",
+    "originalError": {
+      "code": "ENETUNREACH",
+      "errno": "ENETUNREACH",
+      "syscall": "connect",
+      "address": "169.254.169.254",
+      "port": 80,
+      "message": "connect ENETUNREACH 169.254.169.254:80"
+    }
+  }
+}
