@@ -1,4 +1,4 @@
-import { CloudFront } from '../../src/CloudFront'
+import { CloudFront, CFLogsS3Object } from '../../src/CloudFront'
 import { S3Bucket, S3} from '../../src/S3';
 import { awsMockCallback, awsMockFailureCallback } from '../support';
 import * as AWSMock from 'aws-sdk-mock'
@@ -47,7 +47,7 @@ describe('Given a key date and periodHours', () => {
     it('generateS3ObjectPrefix should generate cloudfront logs object prefix', (done)=> {
         // 1 Nov 2018 in ms = 1541031869663
         let keyDate = new Date(1541031869663);
-        const prefix = CloudFront.distribution('MYID').generateS3ObjectPrefix(keyDate, 24);
+        const prefix = new CFLogsS3Object('MYID').generateIdPrefix(keyDate, 24);
         expect(prefix).toBe('MYID.2018-10-31');
         done();
     });

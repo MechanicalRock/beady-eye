@@ -172,21 +172,15 @@ export class S3Bucket {
     }
     async containsFileWithPrefix(prefix: string) {
         let s3 = (await this.s3Client())
-        try {
-            
-            let response = await s3.listObjectsV2({
-                Bucket: this.name,
-                Prefix : prefix,
-                MaxKeys: 1
-            }).promise();
-            if(response.Contents && response.Contents.length>0) {
-                return true;
-            } else {
-                return false;
-            }
-        } catch (e) {
-            expect(e.code).to.equal('AccessDenied')
-            return false
+        let response = await s3.listObjectsV2({
+            Bucket: this.name,
+            Prefix : prefix,
+            MaxKeys: 1
+        }).promise();
+        if(response.Contents && response.Contents.length>0) {
+            return true;
+        } else {
+            return false;
         }
     }
     async canPutObject(key: string) {

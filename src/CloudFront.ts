@@ -4,7 +4,7 @@ import { S3, S3Bucket } from './S3';
 import { expect } from 'chai'
 import { isMatch } from 'lodash'
 
-class CloudFrontDistribution {
+export class CloudFrontDistribution {
     domainName;
     distributionId;
     role;
@@ -39,29 +39,15 @@ class CloudFrontDistribution {
             expect(response.Distribution).not.to.be.undefined;
             return true;
         } catch (error ) { 
+            expect(error.code).to.equal('NoSuchDistribution');
             return false;
         }
     }
 
     async isSendingLogsWithin( periodHours: number, logsBucket: S3Bucket){
-        const prefix = this.generateS3ObjectPrefix(new Date(), periodHours);
+        const prefix = new CFLogsS3Object(this.distributionId).generateIdPrefix(new Date(), periodHours);
         return(await logsBucket.containsFileWithPrefix(prefix));
     }
-
-    // async logBucketWithCFLogs(bucketName: string, prefix: string ){
-    //     const targetRole = IAM.role({
-    //         roleArn: this.role? this.role.role: undefined,
-    //       })
-    //     let s3Bucket = S3.bucket(this.logsBucketName, targetRole);
-    //     return(await s3Bucket.containsFileWithPrefix(prefix));
-    // }
-    
-    generateS3ObjectPrefix( keyDate: Date, periodHours: number) : string {
-        let earliestDate  = new Date((keyDate.getTime() - ( periodHours * 60 * 60 * 1000 )));
-        const earliestDateString = (earliestDate).toISOString().substring(0,10);
-        return(`${this.distributionId}.${earliestDateString}`);
-    }
-
 }
 
 const cloudFrontDistribution = ( distributionId: string, role?: IamRole) => {
@@ -70,4 +56,15 @@ const cloudFrontDistribution = ( distributionId: string, role?: IamRole) => {
 
 export const CloudFront = {
     distribution : cloudFrontDistribution
+}
+export class CFLogsS3Object {
+    distributionId;
+    constructor(distributionId:string) {
+        this.distributionId = distributionId;
+    }
+    generateIdPrefix( keyDate: Date, periodHours: number) : string {
+        let earliestDate  = new Date((keyDate.getTime() - ( periodHours * 60 * 60 * 1000 )));
+        const earliestDateString = (earliestDate).toISOString().substring(0,10);
+        return(`${this.distributionId}.${earliestDateString}`);
+    }
 }

@@ -1,5 +1,5 @@
 import { S3 } from '../../src/S3'
-import { awsMockCallback } from '../support'
+import { awsMockCallback, awsMockFailureCallback } from '../support'
 import * as AWSMock from 'aws-sdk-mock'
 
 describe('S3.bucket#containsFileWithPrefix', () => {
@@ -22,11 +22,4 @@ describe('S3.bucket#containsFileWithPrefix', () => {
         expect(response).toBe(false)
         done();
     })
-    it('should return false when permission is denied', async (done) => {
-        AWSMock.mock('S3', 'listObjectsV2', awsMockCallback('test-data/listObjects-denied.json'));
-        let response = await S3.bucket(bucketName).containsFileWithPrefix('myprefix.txt');
-        expect(response).toBe(false)
-        done();
-    })
-
 });
