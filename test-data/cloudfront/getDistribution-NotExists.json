@@ -1,0 +1,9 @@
+{
+  "message": "The specified distribution does not exist.",
+  "code": "NoSuchDistribution",
+  "time": "2018-11-05T02:45:18.317Z",
+  "requestId": "d4a595d9-e0a4-11e8-af48-0d9878fe7b66",
+  "statusCode": 404,
+  "retryable": false,
+  "retryDelay": 83.84479249303389
+}
