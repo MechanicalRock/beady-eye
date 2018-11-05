@@ -41,7 +41,7 @@
     "jasmine-promise": "^0.0.1",
     "jasmine-ts-console-reporter": "^3.1.1",
     "lodash.ismatch": "^4.4.0",
-    "proxy-agent": "^3.0.3"
+    "proxy-agent": "^3.0.3",
     "request-promise": "^4.2.2",
     "request-promise-native": "^1.0.5"
   },
