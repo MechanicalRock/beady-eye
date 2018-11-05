@@ -46,20 +46,20 @@
     "request-promise-native": "^1.0.5"
   },
   "devDependencies": {
-    "@types/aws-lambda": "^8.10.7",
-    "@types/chai": "^4.1.6",
-    "@types/jest": "^22.2.3",
+    "@types/aws-lambda": "^8.10.15",
+    "@types/chai": "^4.1.7",
+    "@types/jest": "^23.3.9",
     "@types/lodash.ismatch": "^4.4.4",
-    "@types/node": "^6.14.0",
-    "approvals": "^2.1.2",
-    "aws-sdk-mock": "^2.0.0",
-    "cloudformation-declarations": "^0.1.2",
-    "jasmine-ts": "^0.2.1",
-    "jest": "^22.4.3",
-    "nodemon": "^1.18.4",
-    "snyk": "^1.104.1",
-    "ts-jest": "^22.4.6",
-    "typescript": "2.9.2"
+    "@types/node": "^10.12.2",
+    "approvals": "^3.0.2",
+    "aws-sdk-mock": "^4.2.0",
+    "cloudformation-declarations": "^0.2.0",
+    "jasmine-ts": "^0.3.0",
+    "jest": "^23.6.0",
+    "nodemon": "^1.18.5",
+    "snyk": "^1.106.1",
+    "ts-jest": "^23.10.4",
+    "typescript": "3.1.6"
   },
   "jest": {
     "globals": {
