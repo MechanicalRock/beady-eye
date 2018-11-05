@@ -2,31 +2,11 @@ import { RDS } from '../../src/RDS'
 import { connectionTester, endpointAddress } from '../../src/interfaces'
 import { callbackSuccessReturning, nvp } from '../support'
 import { testRds } from './RDS.stub'
+import { connectionTesterMock } from '../ConnectionTesters/connectionTesterMock';
 var AWSMock = require('aws-sdk-mock')
 var sinon = require('sinon')
 var net = require('net')
 
-class connectionTesterMock implements connectionTester {
-
-    sourceId: string;
-    result: boolean;
-    requestedAddress: string;
-    requestedPort: number;
-
-    constructor(sourceId: string) {
-        this.sourceId = sourceId;
-    }
-
-    setResult(result: boolean) {
-        this.result = result;
-    }
-
-    async tryConnectionTo(endpoint: endpointAddress, timeout_ms: number): Promise<boolean> {
-        this.requestedAddress = endpoint.address;
-        this.requestedPort = endpoint.port;
-        return this.result;
-    }
-}
 
 
 describe("RDSObject#canMakeConnection function", () => {
