@@ -1,5 +1,6 @@
 import { APIGatewayEvent, Callback, Context, Handler } from 'aws-lambda';
-
+import { S3JUnitReporter } from './S3JunitReporter';
+import { JUnitXmlReporter } from 'jasmine-reporters';
 const Jasmine = require('jasmine')
 const TSConsoleReporter = require('jasmine-ts-console-reporter');
 
@@ -40,24 +41,32 @@ const defaultJasmineConfigurer = (jasmine) => {
   
     // env.fail
     env.clearReporters(); // Clear default console reporter
-    env.specFilter = () => true
+    // Spec filter on env is deprecated
+    // env.specFilter = () => true
     let reporter = new TSConsoleReporter()
     reporter.setOptions( {showColor : false})
     env.addReporter(reporter);
     //  env.throwOnExpectationFailure(true)
-  
 }
 
 export class JasmineComplianceRunner {
     jasmine
     
-    constructor(callback: Callback) {
+    constructor(callback: Callback, productname?:string, s3BucketName?:string, localExecution?:boolean ) {
         this.jasmine = new Jasmine()
-        
+        // Write to tmp directory of lambda
+        let reportLocation = '/tmp/';
+        if(localExecution) reportLocation = "./";
         this.withConfigurer(defaultJasmineConfigurer)
-        
+        let junitReporter = new JUnitXmlReporter({
+          savePath: reportLocation,
+          copnsolidateAll: true
+        });
+        this.jasmine.env.addReporter(junitReporter);
+        if(s3BucketName){
+          this.jasmine.env.addReporter(S3JUnitReporter(callback, s3BucketName, reportLocation+"junitresults.xml"));
+        }
         this.jasmine.env.addReporter(lambdaNotificationReporter(callback));
-        
     }
 
     /**
