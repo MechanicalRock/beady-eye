@@ -75,6 +75,13 @@ export class JasmineComplianceRunner {
         this.reportingCompleted = fakeRpt.promise;
     }
 
+    // constructor(...reporters: any[]) {
+    //   reporters.forEach(r => this.jasmine.env.addReporter(r));
+    //   const fakeRpt = fakeReporter()
+    //   this.jasmine.env.addReporter(fakeRpt.reporter);
+    //   this.reportingCompleted = fakeRpt.promise;
+    // }
+
     /**
      * Takes a callback function (jasmine) => {}, providing access to the underlying jasmine object for configuration
      * @param jasmineConfigurer 
@@ -88,14 +95,11 @@ export class JasmineComplianceRunner {
         return this.reportingCompleted;
     }
 
-    async uploadJUnitReportToS3(productName:string, s3BucketName:string) {
+    async uploadJUnitReportToS3(s3ObjectPrefix:string, s3BucketName:string) {
       
         const reportContents = fs.readFileSync(this.reportLocation, 'utf8');
-        if(!productName) {
-          productName = 'complianceReport';
-        }
         const now = format(new Date(), 'YYYY-MM-DD-HH-mm-ss');
-        const fileName = `${productName}-${now}.xml`;
+        const fileName = `${s3ObjectPrefix}-${now}.xml`;
         
         const params = {
           Body: reportContents,
