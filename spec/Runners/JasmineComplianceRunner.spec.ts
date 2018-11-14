@@ -15,27 +15,18 @@ describe('Given a sample test', () => {
         AWSMock.mock("S3", "putObject", (params, callback) => {
             callback(null, "");
         });
-        const envStage = 'np'
-        var cb = () => { };
-        const localExecutionFlag = true;
-        const complianceRunner = new LambdaTestRunner(localExecutionFlag);
-        let complianceParams = {};
+        const complianceRunner = new LambdaTestRunner('.');
         require('./sampleTestSuite').suite({});
         await complianceRunner.execute();
         await complianceRunner.uploadJUnitReportToS3('MyProduct', 'MyBucket');
-        //sleep(4000);
         done();
     })
     it('Jasmin compliance runner should throw an error when it can not upload the report to S3', async (done) => {
         AWSMock.mock("S3", "putObject", (params, callback) => {
             callback(new Error('unable to upload to S3'), "");
         });
-
-        const envStage = 'np'
-        var cb = () => { };
-        const localExecutionFlag = true;
         try {
-            const complianceRunner = new LambdaTestRunner(localExecutionFlag);
+            const complianceRunner = new LambdaTestRunner('.');
             require('./sampleTestSuite').suite({});
             await complianceRunner.execute();
             await complianceRunner.uploadJUnitReportToS3('MyProduct', 'MyBucket');
@@ -45,6 +36,4 @@ describe('Given a sample test', () => {
         }
         done.fail('exception not thrown');
     })
-
-
 })

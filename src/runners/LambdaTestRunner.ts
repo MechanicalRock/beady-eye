@@ -4,18 +4,17 @@ import { S3 } from 'aws-sdk'
 import { JasmineComplianceRunner } from './JasmineComplianceRunner';
 import { lambdaNotificationReporter } from './lambdaNotificationReporter';
 import { JUnitXmlReporter } from 'jasmine-reporters';
+import { join } from 'path'
 
 export class LambdaTestRunner {
     private runner: JasmineComplianceRunner;
-    private basePath;
     private reportLocation;
 
-    constructor(localExecution?: boolean) {
-        this.basePath = localExecution ? './' : '/tmp/';
-        this.reportLocation = this.basePath + 'junitresults.xml';
+    constructor(tempReportLocation: string = '/tmp') {
+        this.reportLocation = join(tempReportLocation,'junitresults.xml');
         let junitReporter = new JUnitXmlReporter({
-            savePath: this.basePath,
-            copnsolidateAll: true
+            savePath: tempReportLocation,
+            consolidateAll: true
         });
         this.runner = new JasmineComplianceRunner(junitReporter, lambdaNotificationReporter());
     }
