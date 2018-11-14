@@ -20,9 +20,7 @@ const defaultJasmineConfigurer = (jasmine) => {
 export class JasmineComplianceRunner {
   jasmine
   private reportingCompleted: Promise<void>;
-  private basePath;
-  private reportLocation;
-
+ 
   constructor(...reporters: any[]) {
     this.jasmine = new Jasmine()
     this.withConfigurer(defaultJasmineConfigurer)
