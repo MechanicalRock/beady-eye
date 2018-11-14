@@ -1,10 +1,13 @@
 import { APIGatewayEvent, Callback, Context, Handler } from 'aws-lambda';
-import { S3JUnitReporter } from './S3JunitReporter';
 import { JUnitXmlReporter } from 'jasmine-reporters';
+import { fakeReporter } from './fakeReporter';
 const Jasmine = require('jasmine')
 const TSConsoleReporter = require('jasmine-ts-console-reporter');
+import * as fs from 'fs';
+import { format } from 'date-fns';
+import { S3 } from 'aws-sdk'
 
-export const lambdaNotificationReporter = (callback: Callback) => {
+export const lambdaNotificationReporter = () => {
   return {
     results : [],
     testErrors: [],
@@ -13,14 +16,12 @@ export const lambdaNotificationReporter = (callback: Callback) => {
       if (result.overallStatus === 'failed') {
         let failedTests = this.testErrors.map(x => x.fullName).join(', ');
         console.log(this.testErrors);
-        callback(new Error("tests failed:" + failedTests));
       } else{
         let passedTestCount = this.results.filter(x => x.status === 'passed').length
         let testSummary = `Tests Passed: ${passedTestCount}`
         this.passedExpectations.forEach((exp) => {
           testSummary += exp.description; 
         })
-        callback(null,testSummary);
       }
     },
     specDone : function(result) {
@@ -49,24 +50,29 @@ const defaultJasmineConfigurer = (jasmine) => {
     //  env.throwOnExpectationFailure(true)
 }
 
+
+
 export class JasmineComplianceRunner {
     jasmine
+    private reportingCompleted: Promise<void>;
+    private basePath;
+    private reportLocation;
     
-    constructor(callback: Callback, productname?:string, s3BucketName?:string, localExecution?:boolean ) {
+    constructor(localExecution?:boolean ) {
         this.jasmine = new Jasmine()
         // Write to tmp directory of lambda
-        let reportLocation = '/tmp/';
-        if(localExecution) reportLocation = "./";
+        this.basePath=localExecution?'./':'/tmp/';
+        this.reportLocation = this.basePath+'junitresults.xml';
         this.withConfigurer(defaultJasmineConfigurer)
         let junitReporter = new JUnitXmlReporter({
-          savePath: reportLocation,
+          savePath: this.basePath,
           copnsolidateAll: true
         });
         this.jasmine.env.addReporter(junitReporter);
-        if(s3BucketName){
-          this.jasmine.env.addReporter(S3JUnitReporter(callback, s3BucketName, reportLocation+"junitresults.xml"));
-        }
-        this.jasmine.env.addReporter(lambdaNotificationReporter(callback));
+        this.jasmine.env.addReporter(lambdaNotificationReporter());
+        const fakeRpt = fakeReporter()
+        this.jasmine.env.addReporter(fakeRpt.reporter);
+        this.reportingCompleted = fakeRpt.promise;
     }
 
     /**
@@ -77,7 +83,27 @@ export class JasmineComplianceRunner {
         jasmineConfigurer(this.jasmine)
     }
 
-    execute() {
-        this.jasmine.env.execute()
+    async execute(): Promise<void> {
+        this.jasmine.env.execute();
+        return this.reportingCompleted;
+    }
+
+    async uploadJUnitReportToS3(productName:string, s3BucketName:string) {
+      
+        const reportContents = fs.readFileSync(this.reportLocation, 'utf8');
+        if(!productName) {
+          productName = 'complianceReport';
+        }
+        const now = format(new Date(), 'YYYY-MM-DD-HH-mm-ss');
+        const fileName = `${productName}-${now}.xml`;
+        
+        const params = {
+          Body: reportContents,
+          Bucket: s3BucketName,
+          Key: fileName
+        };
+        let s3 = new S3();
+        return(s3.putObject(params).promise());
+        
     }
 }
