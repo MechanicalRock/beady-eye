@@ -8,3 +8,4 @@ export {CloudFront} from './CloudFront';
 // All connection testers
 export * from './ConnectionTesters'
 export * from './runners/JasmineComplianceRunner'
+export * from './runners/LambdaTestRunner'
