@@ -5,6 +5,7 @@ export { RDS } from './RDS'
 export { RedshiftCluster } from './Redshift'
 export { CloudFront } from './CloudFront';
 export { DynamoDb } from "./DynamoDb";
+export { SNSTopic } from "./SNS";
 
 // All connection testers
 export * from './ConnectionTesters'
