@@ -6,16 +6,28 @@ export class SNSTopic {
 
     constructor(private topicArn: string, private role?: IamRole) { }
 
-    public shouldExist = async () => {
+    public shouldExist = async (): Promise<boolean> => {
         const sns = await this.initSns();
-        const topicAttributesResponse = await sns.getTopicAttributes({
+        const topicAttributes = (await sns.getTopicAttributes({
             TopicArn: this.topicArn,
-        }).promise();
-        expect(topicAttributesResponse).not.toBeUndefined();
+        }).promise()).Attributes;
 
-        const attributesMap = topicAttributesResponse.Attributes as SNS.TopicAttributesMap;
-        const topicDisplayName = attributesMap.DisplayName;
-        expect(topicDisplayName).not.toBeUndefined();
+        expect(topicAttributes).not.toBeUndefined();
+        return true;
+    }
+
+    public isEncryptedAtRest = async (): Promise<boolean> => {
+        const sns = await this.initSns();
+        const topicAttributes = (await sns.getTopicAttributes({
+            TopicArn: this.topicArn,
+        }).promise()).Attributes;
+        expect(topicAttributes).not.toBeUndefined();
+
+        const kmsKeyId = topicAttributes!.KmsMasterKeyId;
+        // tslint:disable-next-line:no-console
+        console.log(`KMS Key Id: ${kmsKeyId}`);
+        expect(kmsKeyId).not.toBeUndefined();
+        return true;
     }
 
     private initSns = async () => {
@@ -29,3 +41,13 @@ export class SNSTopic {
         }
     }
 }
+
+const snsTopic = (topicArn: string, role?: IamRole) => {
+    return new SNSTopic(topicArn, role);
+};
+
+export const _SNS = {
+    topic: snsTopic,
+};
+
+export default _SNS;
