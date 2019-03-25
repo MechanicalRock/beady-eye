@@ -4,8 +4,8 @@
 yarn run dependency:upgrade
 
 # Check nothing is broken
-yarn run test
-yarn run test:security
+npm run test
+npm run test:security
 
 # Commit changes
 git add package.json yarn.lock

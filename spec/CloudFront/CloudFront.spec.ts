@@ -28,14 +28,14 @@ describe('CloudFront.Distribution#SendingLogsToS3Within24hours', () => {
         done();
     })
     it('should return true when cloudfront logs for a given day could be found in S3', async (done) => {
-        jest.spyOn(S3Bucket.prototype,"containsFileWithPrefix").mockReturnValue(true);
+        jest.spyOn(S3Bucket.prototype,"containsFileWithPrefix").mockResolvedValue(true);
         const s3Bucket = S3.bucket('MY-LOG-BUCKETNAME');
         let response = await CloudFront.distribution('MYEXISTINGCLOUDFRONT').isSendingLogsWithin(24, s3Bucket);
         expect(response).toBe(true);
         done();
     });
     it('should return false when cloudfront logs for a given day could not be found in S3', async (done) => {
-        jest.spyOn(S3Bucket.prototype,"containsFileWithPrefix").mockReturnValue(false);
+        jest.spyOn(S3Bucket.prototype,"containsFileWithPrefix").mockResolvedValue(false);
         const s3Bucket = S3.bucket('MY-LOG-BUCKETNAME');
         let response = await CloudFront.distribution('MYEXISTINGCLOUDFRONT').isSendingLogsWithin(24, s3Bucket);
         expect(response).toBe(false);
