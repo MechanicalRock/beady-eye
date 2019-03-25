@@ -8,7 +8,7 @@
     "build:watch": "nodemon --watch src --legacy-watch --ext ts --exec npm run build --",
     "clean": "rm -rf .build",
     "ci:upgrade-dependencies": "./upgrade-dependencies.sh",
-    "dependency:upgrade": "yarn upgrade --latest",
+    "dependency:upgrade": "npx npm-update",
     "deploy:dev": "serverless deploy --stage dev",
     "lint": "eslint .",
     "lint-fix": "eslint . --fix",
