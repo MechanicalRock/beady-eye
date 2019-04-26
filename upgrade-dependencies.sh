@@ -1,7 +1,9 @@
 #!/bin/bash
+set -e
 
 # Upgrade packages
-yarn run dependency:upgrade
+npm run dependency:upgrade
+npm install
 
 # Check nothing is broken
 npm run test
