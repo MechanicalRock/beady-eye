@@ -1,4 +1,4 @@
-# Beady Eye
+# Beady Eye [![Known Vulnerabilities](https://snyk.io/test/github/MechanicalRock/beady-eye/badge.svg)](https://snyk.io/test/github/MechanicalRock/beady-eye) 
 
 [Behaviour Driven Infrastructure](https://mechanicalrock.github.io/bdd/devops/2016/12/21/introducing-infrastructure-mapping.html) is the technique of describing the expected behaviour of infrastructure components to support the specification and test driven development of Infrastructure as Code.
 
