@@ -24,7 +24,9 @@
     "test:accept": "TMPDIR=/tmp cucumber-js spec",
     "test:security": "snyk test",
     "test:security-monitor": "snyk monitor",
-    "test:cover": "jasmine --coverage"
+    "test:cover": "jasmine --coverage",
+    "snyk-protect": "snyk protect",
+    "prepare": "npm run snyk-protect"
   },
   "repository": {
     "type": "git",
@@ -44,7 +46,8 @@
     "lodash.ismatch": "^4.4.0",
     "proxy-agent": "^3.1.0",
     "request-promise": "^4.2.4",
-    "request-promise-native": "^1.0.7"
+    "request-promise-native": "^1.0.7",
+    "snyk": "^1.189.0"
   },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.24",
@@ -59,7 +62,6 @@
     "jasmine-ts": "^0.3.0",
     "jest": "^24.7.1",
     "nodemon": "^1.18.11",
-    "snyk": "^1.153.0",
     "ts-jest": "^24.0.2",
     "typescript": "3.4.5"
   },
@@ -96,5 +98,6 @@
       "json",
       "node"
     ]
-  }
+  },
+  "snyk": true
 }
