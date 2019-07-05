@@ -1,11 +1,13 @@
 #!/bin/bash
+set -e
 
 # Upgrade packages
-yarn run dependency:upgrade
+npm run dependency:upgrade
+npm install
 
 # Check nothing is broken
-yarn run test
-yarn run test:security
+npm run test
+npm run test:security
 
 # Commit changes
 git add package.json yarn.lock

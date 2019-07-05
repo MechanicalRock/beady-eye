@@ -38,7 +38,7 @@ const cloudFrontTestDataGenerator = async (cloudFrontId: string) => {
     const httpProxy = process.env['HTTP_PROXY'];
     if(httpProxy){
         config.update({
-            httpOptions: { agent: proxy(httpProxy) }
+            httpOptions: { agent: proxy(httpProxy) as any }
         });
     }
     
