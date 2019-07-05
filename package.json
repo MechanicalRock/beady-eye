@@ -50,20 +50,21 @@
     "snyk": "^1.189.0"
   },
   "devDependencies": {
-    "@types/aws-lambda": "^8.10.24",
+    "@types/aws-lambda": "^8.10.27",
     "@types/chai": "^4.1.7",
-    "@types/jest": "^24.0.11",
+    "@types/jest": "^24.0.15",
     "@types/lodash.ismatch": "^4.4.6",
     "@types/node": "^11.13.7",
     "approvals": "^3.0.5",
-    "aws-sdk-mock": "^4.4.0",
+    "aws-sdk-mock": "^4.5.0",
     "cloudformation-declarations": "^0.2.0",
     "jasmine-core": "^3.4.0",
     "jasmine-ts": "^0.3.0",
-    "jest": "^24.7.1",
-    "nodemon": "^1.18.11",
+    "jest": "^24.8.0",
+    "nodemon": "^1.19.1",
+    "snyk": "^1.192.0",
     "ts-jest": "^24.0.2",
-    "typescript": "3.4.5"
+    "typescript": "3.5.2"
   },
   "peerDependencies": {
     "aws-sdk": "^2.337.0"
