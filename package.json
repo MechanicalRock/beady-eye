@@ -49,7 +49,7 @@
     "proxy-agent": "^3.1.0",
     "request-promise": "^4.2.4",
     "request-promise-native": "^1.0.7",
-    "snyk": "^1.189.0"
+    "snyk": "^1.192.3"
   },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.27",
@@ -64,7 +64,7 @@
     "jasmine-ts": "^0.3.0",
     "jest": "^24.8.0",
     "nodemon": "^1.19.1",
-    "snyk": "^1.192.0",
+    "snyk": "^1.192.3",
     "ts-jest": "^24.0.2",
     "typescript": "3.5.2"
   },
