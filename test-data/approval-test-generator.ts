@@ -1,7 +1,8 @@
-import { S3, STS } from 'aws-sdk'
+import { S3, STS, SSM } from 'aws-sdk'
 import fs = require('fs')
 import { IAM } from '../src/IAM'
 import { writeTo, credentials, credentialsForRole } from './utils'
+import uuid from 'uuid/v4'
 
 
 const approvalTest = async () => {
@@ -10,12 +11,24 @@ const approvalTest = async () => {
         // s3Tests( credentials() )
         // stsTests( )
         // stsTests( {externalId: 'Testing'})
+        await ssmParameterTests()
     } catch (err) {
         console.log("Test data generation failed: " + err)
     }
 }
 
 const roleNameWithoutAccess = 'beady-eyeDeniedRole'
+
+const ssmParameterTests = async () => {
+    const ssm = new SSM();
+    ssm.getParameter({ Name: 'non-existant-parameter' }).promise().catch(writeTo('getParameter-notExists.json'));
+    const Name = uuid();
+    await ssm.putParameter( { Name, Value: 'sampleValue', Type: 'String' } ).promise().then( () => {
+        return ssm.getParameter({Name}).promise().then(writeTo('get-Parameter-Exists.json'))
+    } ).then( () => {
+        return ssm.deleteParameter({Name}).promise()
+    })
+}
 
 const s3Tests = (credentials) => {
     var s3 = new S3({ credentials: credentials })
