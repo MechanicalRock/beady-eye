@@ -41,15 +41,12 @@
   "dependencies": {
     "chai": "^4.2.0",
     "date-fns": "^1.30.1",
-    "jasmine": "^3.4.0",
+    "jasmine": "^3.5.0",
     "jasmine-promise": "^0.0.1",
     "jasmine-reporters": "^2.3.2",
     "jasmine-ts-console-reporter": "^3.1.1",
     "lodash.ismatch": "^4.4.0",
-    "proxy-agent": "^3.1.1",
-    "request-promise": "^4.2.4",
-    "request-promise-native": "^1.0.7",
-    "snyk": "^1.316.1"
+    "proxy-agent": "^3.1.1"
   },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.27",
@@ -64,6 +61,7 @@
     "jasmine-ts": "^0.3.0",
     "jest": "^24.8.0",
     "nodemon": "^1.19.1",
+    "snyk": "^1.316.1",
     "ts-jest": "^24.0.2",
     "typescript": "3.5.2"
   },
