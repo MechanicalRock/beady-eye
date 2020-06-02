@@ -14,7 +14,6 @@
     "lint-fix": "eslint . --fix",
     "package": "serverless package",
     "preversion": "npm run build",
-    "prepublish": "npm run build",
     "release:major": "npm run clean && npm run build && npm version major && npm run test && npm login && npm publish --access public && npm run test:security-monitor && git push && git push --tags",
     "release:minor": "npm run clean && npm run build && npm version minor && npm run test && npm login && npm publish --access public && npm run test:security-monitor && git push && git push --tags",
     "release:patch": "npm run clean && npm run build && npm version patch && npm run test && npm login && npm publish --access public && npm run test:security-monitor && git push && git push --tags",
@@ -51,7 +50,7 @@
   "devDependencies": {
     "@types/aws-lambda": "^8.10.27",
     "@types/chai": "^4.1.7",
-    "@types/jest": "^24.0.15",
+    "@types/jest": "^25.2.3",
     "@types/lodash.ismatch": "^4.4.6",
     "@types/node": "^11.13.7",
     "approvals": "^3.0.5",
@@ -59,10 +58,10 @@
     "cloudformation-declarations": "^0.2.0",
     "jasmine-core": "^3.4.0",
     "jasmine-ts": "^0.3.0",
-    "jest": "^24.8.0",
-    "nodemon": "^1.19.1",
+    "jest": "^26.0.1",
+    "nodemon": "^2.0.4",
     "snyk": "^1.316.1",
-    "ts-jest": "^24.0.2",
+    "ts-jest": "^26.1.0",
     "typescript": "3.5.2"
   },
   "peerDependencies": {
