@@ -1,0 +1,10 @@
+{
+  "Parameter": {
+    "Name": "cd94f8d2-d26e-4722-8ee7-f913c374c82d",
+    "Type": "String",
+    "Value": "sampleValue",
+    "Version": 1,
+    "LastModifiedDate": "2019-10-29T12:26:42.238Z",
+    "ARN": "arn:aws:ssm:ap-southeast-2:381607457818:parameter/cd94f8d2-d26e-4722-8ee7-f913c374c82d"
+  }
+}
