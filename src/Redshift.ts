@@ -1,126 +1,134 @@
-import { Redshift as AwsRedshift, EC2 } from 'aws-sdk'
-import { expect } from 'chai'
-import { region } from 'aws-sdk/clients/health';
-import { ConnectableAWSService } from './ConnectableAWSService'
-import { endpointAddress, connectable } from './interfaces'
-import { flatten } from './util/Arrays'
+import { Redshift as AwsRedshift, EC2 } from "aws-sdk";
+import { expect } from "chai";
+import { region } from "aws-sdk/clients/health";
+import { ConnectableAWSService } from "./ConnectableAWSService";
+import { endpointAddress, connectable } from "./interfaces";
+import { flatten } from "./util/Arrays";
 
+export class RedshiftCluster implements connectable {
+  clusterName: string;
+  redshiftClient: AwsRedshift;
+  ec2: EC2;
 
-export class RedshiftCluster implements connectable{
-    clusterName: string
-    redshiftClient: AwsRedshift
-    ec2: EC2
+  constructor(clusterName: string, region?: string) {
+    this.clusterName = clusterName;
+    const clientParams = { region: region };
+    this.redshiftClient = new AwsRedshift(clientParams);
+    this.ec2 = new EC2(clientParams);
+  }
 
-    constructor(clusterName: string, region?: string) {
-        this.clusterName = clusterName
-        let clientParams = { region: region }
-        this.redshiftClient = new AwsRedshift(clientParams)
-        this.ec2 = new EC2(clientParams)
+  async shouldExist() {
+    try {
+      await this.getClusterDetails();
+
+      return true;
+    } catch (err) {
+      if (err.code === "ClusterNotFound") {
+        return false;
+      }
+      throw err;
     }
+  }
 
-    async shouldExist() {
-        try {
+  async allowsConnectionFrom(cidrRange) {
+    const cluster = await this.getClusterDetails();
 
-            await this.getClusterDetails()
+    const securityGroupIds: Array<string> = this.getSecurityGroupIdsFrom(
+      cluster
+    );
 
-            return true
-        } catch (err) {
+    const allInboundCidrRanges = await this.mapSecurityGroupIdsToInboundCidrRanges(
+      securityGroupIds
+    );
 
-            if (err.code === 'ClusterNotFound') {
-                return false
-            }
-            throw err
-        }
-    }
+    return allInboundCidrRanges.includes(cidrRange);
+  }
 
-    async allowsConnectionFrom(cidrRange) {
+  async getAddress(): Promise<endpointAddress> {
+    const cluster = await this.getClusterDetails();
 
-        let cluster = await this.getClusterDetails()
+    expect(cluster.Endpoint).not.to.be.undefined;
 
-        let securityGroupIds: string[] = this.getSecurityGroupIdsFrom(cluster)
+    return {
+      address: cluster!.Endpoint!.Address as string,
+      port: cluster!.Endpoint!.Port as number,
+    };
+  }
 
-        let allInboundCidrRanges = await this.mapSecurityGroupIdsToInboundCidrRanges(securityGroupIds)
+  /**
+   * Get the endpoint for the RedshiftCluster
+   * @deprecated Use #getAddress() instead.  This method shall be removed in a future version.
+   * @see #getAddress
+   */
+  async externalEndpoint(): Promise<AwsRedshift.Endpoint> {
+    console.error("externalEndpoint is deprecated.");
 
-        return allInboundCidrRanges.includes(cidrRange)
-    }
+    const cluster = await this.getClusterDetails();
 
-    async getAddress(): Promise<endpointAddress> {
-        let cluster = await this.getClusterDetails()
+    expect(cluster.Endpoint).not.to.be.undefined;
 
-        expect(cluster.Endpoint).not.to.be.undefined
+    return cluster!.Endpoint as AwsRedshift.Endpoint;
+  }
 
-        return {
-            address: cluster!.Endpoint!.Address as string,
-            port: cluster!.Endpoint!.Port as number
-        }
-    }
+  private async getClusterDetails(): Promise<AwsRedshift.Cluster> {
+    const clusters = await this.redshiftClient
+      .describeClusters({
+        ClusterIdentifier: this.clusterName,
+      })
+      .promise();
 
+    expect(clusters.Clusters).not.to.be.undefined;
+    expect(clusters.Clusters!.length).to.equal(1);
 
-    /**
-     * Get the endpoint for the RedshiftCluster
-     * @deprecated Use #getAddress() instead.  This method shall be removed in a future version.
-     * @see #getAddress
-     */
-    async externalEndpoint(): Promise<AwsRedshift.Endpoint>{
+    const clusterDetails = clusters!.Clusters![0];
 
-        console.error('externalEndpoint is deprecated.')
+    return clusterDetails;
+  }
 
-        let cluster = await this.getClusterDetails()
+  private getSecurityGroupIdsFrom(cluster: AwsRedshift.Cluster) {
+    expect(cluster.VpcSecurityGroups).not.to.be.undefined;
 
-        expect(cluster.Endpoint).not.to.be.undefined
+    const securityGroupIds: Array<string> = cluster!.VpcSecurityGroups!.map(
+      (securityGroup: AwsRedshift.VpcSecurityGroupMembership): string => {
+        expect(securityGroup.VpcSecurityGroupId).not.to.be.undefined;
+        return securityGroup.VpcSecurityGroupId as string;
+      }
+    );
+    return securityGroupIds;
+  }
 
-        return cluster!.Endpoint as AwsRedshift.Endpoint
+  private async mapSecurityGroupIdsToInboundCidrRanges(
+    securityGroupIds: Array<string>
+  ) {
+    const securityGroups = await this.ec2
+      .describeSecurityGroups({
+        GroupIds: securityGroupIds,
+      })
+      .promise();
 
-    }
+    const securityGroupResponse: Array<EC2.SecurityGroup> =
+      securityGroups.SecurityGroups || [];
 
-    private async getClusterDetails(): Promise<AwsRedshift.Cluster> {
-        let clusters = await this.redshiftClient.describeClusters({
-            ClusterIdentifier: this.clusterName
-        }).promise()
+    return this.getInboundCidrRangesFrom(securityGroupResponse);
+  }
 
-        expect(clusters.Clusters).not.to.be.undefined
-        expect(clusters.Clusters!.length).to.equal(1)
+  private getInboundCidrRangesFrom(securityGroups: Array<EC2.SecurityGroup>) {
+    const allInboundRules: Array<EC2.IpPermission> = flatten(
+      securityGroups.map((securityGroup) => securityGroup.IpPermissions || [])
+    );
 
-        let clusterDetails = clusters!.Clusters![0]
+    // IPV4 only supported at the moment
+    const allInboundIpRanges: Array<EC2.IpRange> = flatten(
+      allInboundRules.map(
+        (securityGroupRule) => securityGroupRule.IpRanges || []
+      )
+    );
 
-        return clusterDetails
+    const allInboundCidrRanges = allInboundIpRanges.map((cidr) => cidr.CidrIp);
+    return allInboundCidrRanges;
+  }
 
-    }
-
-    private getSecurityGroupIdsFrom(cluster: AwsRedshift.Cluster) {
-        expect(cluster.VpcSecurityGroups).not.to.be.undefined
-
-        let securityGroupIds: string[] = cluster!.VpcSecurityGroups!.map((securityGroup: AwsRedshift.VpcSecurityGroupMembership): string => {
-
-            expect(securityGroup.VpcSecurityGroupId).not.to.be.undefined
-            return securityGroup.VpcSecurityGroupId as string
-
-        })
-        return securityGroupIds
-    }
-
-    private async mapSecurityGroupIdsToInboundCidrRanges(securityGroupIds: string[]) {
-        let securityGroups = await this.ec2.describeSecurityGroups({
-            GroupIds: securityGroupIds
-        }).promise()
-
-        let securityGroupResponse: EC2.SecurityGroup[] = securityGroups.SecurityGroups || []
-
-        return this.getInboundCidrRangesFrom(securityGroupResponse)
-    }
-
-    private getInboundCidrRangesFrom(securityGroups: EC2.SecurityGroup[]) {
-        let allInboundRules: EC2.IpPermission[] = flatten(securityGroups.map(securityGroup => securityGroup.IpPermissions || []))
-
-        // IPV4 only supported at the moment
-        let allInboundIpRanges: EC2.IpRange[] = flatten(allInboundRules.map(securityGroupRule => securityGroupRule.IpRanges || []))
-
-        let allInboundCidrRanges = allInboundIpRanges.map(cidr => cidr.CidrIp)
-        return allInboundCidrRanges
-    }
-
-    toString() {
-        return `RedshiftCluster(${this.clusterName})`
-    }
-
+  toString() {
+    return `RedshiftCluster(${this.clusterName})`;
+  }
 }

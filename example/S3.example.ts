@@ -1,17 +1,15 @@
-import { S3,IAM } from '../src/index'
+import { S3, IAM } from "../src/index";
 
-let bucket = S3.bucket('myBucket')
-describe(bucket.toString(), ()=> {
-
-    
-    let asDeveloperRole = IAM.role({roleName: 'DeveloperRole',
-    accountId: '0123456789'})
-    describe(`${asDeveloperRole} access`, () => {
-        
-        let bucket = S3.bucket('myBucket', asDeveloperRole)
-        it("should exist", async () => {
-            await bucket.shouldExist()
-        })
-    })
-})
-
+const bucket = S3.bucket("myBucket");
+describe(bucket.toString(), () => {
+  const asDeveloperRole = IAM.role({
+    roleName: "DeveloperRole",
+    accountId: "0123456789",
+  });
+  describe(`${asDeveloperRole} access`, () => {
+    const bucket = S3.bucket("myBucket", asDeveloperRole);
+    it("should exist", async () => {
+      await bucket.shouldExist();
+    });
+  });
+});
