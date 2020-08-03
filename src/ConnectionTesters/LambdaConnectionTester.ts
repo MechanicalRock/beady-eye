@@ -45,6 +45,7 @@ export class LambdaConnectionTester implements connectionTester {
     }
   }
 
+  // eslint-disable-next-line @typescript-eslint/ban-types
   private async tryLambdaConnection(lambdaPayload: object) {
     // Invoke the lambda by its function name
     const lambda = new AwsLambda({ region: this.region });

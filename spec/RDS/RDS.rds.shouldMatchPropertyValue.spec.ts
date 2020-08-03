@@ -1,7 +1,9 @@
 import { RDS } from "../../src/RDS";
 import { callbackSuccessReturning, nvp } from "../support";
 import { testRds } from "./RDS.stub";
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const AWSMock = require("aws-sdk-mock");
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const sinon = require("sinon");
 
 describe("RDSObject#shouldMatchPropertyValue function", () => {

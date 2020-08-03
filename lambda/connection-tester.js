@@ -1,5 +1,6 @@
 // lambda connection tester
 "use strict";
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 var net = require("net");
 /**
  * Test connection to a destination host/port.
@@ -61,6 +62,7 @@ exports.connect = function (event, context, callback) {
 };
 
 function fail(event, callback) {
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
   const util = require("util");
   var msg = util.format(
     "Connection failed to %s:%s",

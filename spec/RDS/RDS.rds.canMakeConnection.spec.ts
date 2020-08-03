@@ -1,10 +1,12 @@
 import { RDS } from "../../src/RDS";
-import { connectionTester, endpointAddress } from "../../src/interfaces";
-import { callbackSuccessReturning, nvp } from "../support";
+import { callbackSuccessReturning } from "../support";
 import { testRds } from "./RDS.stub";
 import { connectionTesterMock } from "../ConnectionTesters/connectionTesterMock";
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const AWSMock = require("aws-sdk-mock");
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const sinon = require("sinon");
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const net = require("net");
 
 describe("RDSObject#canMakeConnection function", () => {

@@ -1,7 +1,5 @@
-import { Credentials } from "aws-sdk";
 import { IamRole } from "./IAM";
-
-const net = require("net");
+import { deprecate } from "util";
 
 export { IamRole };
 
@@ -11,10 +9,20 @@ export abstract class AWSService {
   name: string;
   region: string;
   role: IamRole | undefined;
+  // eslint-disable-next-line @typescript-eslint/ban-types
   lazyServiceClient?: object;
 
+  /**
+   * @param typeName The type of AWS Service - used for construction.
+   * @param clientType The type of client - for TypeSafety
+   * @param name The name of the resource, used for object filtering.
+   * @param region The AWS Region
+   * @param role The IAM role to use
+   */
   constructor(
     typeName: string,
+    // Used by subclasses.
+    // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
     clientType,
     name: string,
     region: string,
@@ -27,7 +35,7 @@ export abstract class AWSService {
   }
 
   // To be implemented in sub-classes
-  abstract makeClientType(params): object;
+  abstract makeClientType(params): Record<string, unknown>;
 
   async makeClient(withRole?: IamRole) {
     const tempCreds = withRole ? await withRole.credentials() : undefined;
@@ -59,6 +67,7 @@ export abstract class AWSService {
     };
 
     const client = await this.awsClient();
+
     const result = await client[queryFunction](params).promise();
 
     return result;

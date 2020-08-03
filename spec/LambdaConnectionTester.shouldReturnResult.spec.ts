@@ -2,8 +2,11 @@ import { LambdaConnectionTester } from "../src/ConnectionTesters";
 import { callbackSuccessReturning, callbackFailure } from "./support";
 import { lambdaResponseData } from "./LambdaConnectionTester.stub";
 import { endpointAddress, uriEndpointAddress } from "../src/interfaces";
+
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const sinon = require("sinon");
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const AWSMock = require("aws-sdk-mock");
 
 describe("a connection testing example", () => {

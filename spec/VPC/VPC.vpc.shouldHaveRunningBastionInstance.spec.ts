@@ -1,7 +1,9 @@
 import { VPC } from "../../src/VPC";
 import { callbackSuccessReturning, nvp } from "../support";
 import { testVpc } from "./VPC.stub";
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const AWSMock = require("aws-sdk-mock");
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const sinon = require("sinon");
 
 describe("VPCObject#shouldHaveRunningBastionInstance function", () => {

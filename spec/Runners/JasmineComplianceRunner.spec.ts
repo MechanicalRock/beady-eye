@@ -16,6 +16,7 @@ describe("Given a sample test", () => {
       callback(null, "");
     });
     const complianceRunner = new LambdaTestRunner(".");
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
     require("./sampleTestSuite").suite({});
     await complianceRunner.execute();
     await complianceRunner.uploadJUnitReportToS3("MyProduct", "MyBucket");
@@ -27,6 +28,7 @@ describe("Given a sample test", () => {
     });
     try {
       const complianceRunner = new LambdaTestRunner(".");
+      // eslint-disable-next-line @typescript-eslint/no-var-requires
       require("./sampleTestSuite").suite({});
       await complianceRunner.execute();
       await complianceRunner.uploadJUnitReportToS3("MyProduct", "MyBucket");

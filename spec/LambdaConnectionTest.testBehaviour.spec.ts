@@ -1,5 +1,8 @@
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const connectionTester = require("../lambda/connection-tester");
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const sinon = require("sinon");
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const net = require("net");
 
 describe("The Connection-Tester lambda", () => {

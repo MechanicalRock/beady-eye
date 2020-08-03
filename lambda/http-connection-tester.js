@@ -1,5 +1,6 @@
 // lambda connection tester that returns the http response
 "use strict";
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 var request = require("request-promise-native");
 /**
  * Establishes connection to a destination URL and returns the response.

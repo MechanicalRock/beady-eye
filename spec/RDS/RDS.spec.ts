@@ -1,7 +1,9 @@
 import { RDS } from "../../src/RDS";
 import { IAM } from "../../src/IAM";
 import { callbackSuccessReturning } from "../support";
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const AWSMock = require("aws-sdk-mock");
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const sinon = require("sinon");
 
 describe("RDS Module", () => {
