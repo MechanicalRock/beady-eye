@@ -1,27 +1,25 @@
-import { AWSService, IamRole } from './AWSService'
-import { connectionTester, connectable, endpointAddress } from './interfaces'
+import { AWSService, IamRole } from "./AWSService";
+import { connectionTester, connectable, endpointAddress } from "./interfaces";
 
-export { IamRole }
+export { IamRole };
 
-export abstract class ConnectableAWSService extends AWSService implements connectable {
+export abstract class ConnectableAWSService extends AWSService
+  implements connectable {
+  // To be implemented in sub-classes
+  abstract async getAddress(): Promise<endpointAddress | null>;
 
-    // To be implemented in sub-classes
-    abstract async getAddress() : Promise<endpointAddress | null> ;
+  async isReachableFrom(source: connectionTester, timeout_ms = 1000) {
+    let result = false;
+    const address = await this.getAddress();
 
-    async isReachableFrom(source: connectionTester, timeout_ms=1000) {
-        let result: boolean = false;
-        let address = await this.getAddress()
-
-        if (address) {
-            try {
-                result = await source.tryConnectionTo(address, timeout_ms);
-            }
-            catch (error) {
-                return false;
-            }
-        }
-
-        return result;
+    if (address) {
+      try {
+        result = await source.tryConnectionTo(address, timeout_ms);
+      } catch (error) {
+        return false;
+      }
     }
-}
 
+    return result;
+  }
+}

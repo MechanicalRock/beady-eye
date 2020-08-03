@@ -1,14 +1,9 @@
 class SSMParameter {
-  constructor(private name: String) {
-
-  }
-
+  constructor(private name: string) {}
 }
 
 export default {
-  parameter: (name: String) => {
-    return new SSMParameter(name)
-  }
-}
-
-
+  parameter: (name: string) => {
+    return new SSMParameter(name);
+  },
+};

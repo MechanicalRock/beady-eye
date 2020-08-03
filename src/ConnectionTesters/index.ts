@@ -1,1 +1,1 @@
-export { LambdaConnectionTester } from './LambdaConnectionTester'
+export { LambdaConnectionTester } from "./LambdaConnectionTester";

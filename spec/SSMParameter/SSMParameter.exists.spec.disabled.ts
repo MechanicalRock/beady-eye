@@ -6,5 +6,4 @@ describe("SSMParameter#Exists", () => {
   afterEach(() => {
     AWSMock.restore("SSM");
   });
-
-})
+});
