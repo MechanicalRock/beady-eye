@@ -27,7 +27,7 @@
     "test:security-monitor": "snyk monitor",
     "test:cover": "jasmine --coverage",
     "snyk-protect": "snyk protect",
-    "prepare": "npm run snyk-protect"
+    "prepare:disabled": "npm run snyk-protect"
   },
   "repository": {
     "type": "git",
